@@ -1,2 +1,6 @@
 data/*.json
 server.*.log
+.env
+credentials.env
+node_modules/
+npm-debug.log*

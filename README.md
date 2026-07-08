@@ -52,19 +52,25 @@ success-club-scholarship-portal/
 |-- scholarships.html
 |-- signup.html
 |-- signin.html
+|-- verify.html
 |-- apply.html
 |-- status.html
 |-- admin.html
 |-- about.html
 |-- contact.html
-|-- styles.css
-|-- script.js
-|-- admin.js
 |-- server.js
 |-- package.json
 |-- start.bat
 |-- start.command
+|-- credentials.example.env
 |-- favicon.svg
+|-- assets/
+|   |-- education-hero.png
+|   |-- css/
+|   |   `-- styles.css
+|   `-- js/
+|       |-- script.js
+|       `-- admin.js
 `-- data/
     |-- users.json
     `-- applications.json
@@ -120,12 +126,48 @@ Password: admin2026
 1. Open the homepage.
 2. Go to **Sign Up**.
 3. Create a student account.
-4. Copy the demo verification code shown after signup.
-5. Go to **Sign In**.
-6. Verify the email using the code.
+4. Check Gmail for the OTP verification code.
+5. Enter the code on the **Verify Email** page.
+6. Sign in if needed.
 7. Go to **Apply**.
 8. Submit the scholarship application.
 9. Go to **Application Status** to view the current status.
+
+## Gmail OTP Setup
+
+The app reads Gmail credentials from a local file named:
+
+```txt
+credentials.env
+```
+
+Create it in the same folder as `server.js`:
+
+```txt
+GMAIL_USER=your-email@gmail.com
+GMAIL_APP_PASSWORD=your-16-character-app-password
+```
+
+This simpler format also works:
+
+```txt
+email = your-email@gmail.com
+password = abcd efgh ijkl mnop
+```
+
+Spaces in the Gmail app password are removed automatically before sending email.
+
+Do not upload `credentials.env` to GitHub. The repo includes `credentials.example.env` as the safe template.
+
+To generate a Gmail app password:
+
+1. Open your Google Account security settings.
+2. Turn on 2-Step Verification.
+3. Open App Passwords.
+4. Create a password named `Success Club Website`.
+5. Paste the generated 16-character app password into `credentials.env`.
+
+If `credentials.env` is missing, the app still works in demo mode by showing the verification code locally after signup or resend.
 
 ## Admin Flow
 
@@ -158,8 +200,7 @@ This is useful for a school project because it demonstrates backend logic withou
 ## Notes
 
 - This is a prototype for school/demo use.
-- The email verification system is a demo system, not a real email sender.
-- Real email sending would require Gmail SMTP, an app password, or an email API service.
+- Gmail OTP sending uses Gmail SMTP when `credentials.env` is configured.
 - Do not use this exact project for real scholarship applications without improving security, privacy, hosting, and database setup.
 
 ## Project Theme

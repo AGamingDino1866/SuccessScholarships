@@ -2,14 +2,17 @@ const http = require("http");
 const fs = require("fs/promises");
 const path = require("path");
 const crypto = require("crypto");
+const tls = require("tls");
 
 const PORT = Number(process.env.PORT || 4173);
 const ROOT = __dirname;
 const DATA_DIR = path.join(ROOT, "data");
 const USERS_FILE = path.join(DATA_DIR, "users.json");
 const APPLICATIONS_FILE = path.join(DATA_DIR, "applications.json");
+const CREDENTIALS_FILE = path.join(ROOT, "credentials.env");
 const SESSIONS = new Map();
 const CAPTCHAS = new Map();
+let EMAIL_CONFIG = null;
 
 const ADMIN = {
   id: "admin-1",
@@ -34,6 +37,36 @@ const scholarships = [
 ];
 
 const allowedStatuses = ["Submitted", "Under Review", "Shortlisted", "Approved", "Rejected"];
+
+const loadCredentials = async () => {
+  try {
+    const contents = await fs.readFile(CREDENTIALS_FILE, "utf8");
+    const values = {};
+
+    contents.split(/\r?\n/).forEach((line) => {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith("#")) return;
+      const equals = trimmed.indexOf("=");
+      if (equals === -1) return;
+
+      const key = trimmed.slice(0, equals).trim();
+      const value = trimmed.slice(equals + 1).trim().replace(/^["']|["']$/g, "");
+      values[key] = value;
+    });
+
+    const gmailUser = values.GMAIL_USER || values.email || values.EMAIL;
+    const gmailPassword = values.GMAIL_APP_PASSWORD || values.password || values.PASSWORD;
+
+    if (gmailUser && gmailPassword) {
+      EMAIL_CONFIG = {
+        user: gmailUser,
+        appPassword: gmailPassword.replace(/\s/g, ""),
+      };
+    }
+  } catch (error) {
+    if (error.code !== "ENOENT") throw error;
+  }
+};
 
 const readJson = async (file, fallback) => {
   try {
@@ -166,6 +199,91 @@ const verifyCaptcha = (captchaId, captchaAnswer) => {
 
 const createVerificationCode = () => String(crypto.randomInt(100000, 999999));
 
+const smtpCommand = (socket, command, expectedCode) =>
+  new Promise((resolve, reject) => {
+    const onData = (chunk) => {
+      const text = chunk.toString("utf8");
+      const lines = text.trim().split(/\r?\n/);
+      const lastLine = lines[lines.length - 1] || "";
+      if (!/^\d{3}[ -]/.test(lastLine)) return;
+
+      socket.off("data", onData);
+      if (!lastLine.startsWith(String(expectedCode))) {
+        reject(new Error(`SMTP error after ${command || "connect"}: ${text.trim()}`));
+        return;
+      }
+      resolve(text);
+    };
+
+    socket.on("data", onData);
+    if (command) socket.write(`${command}\r\n`);
+  });
+
+const sendMail = async ({ to, subject, text }) => {
+  if (!EMAIL_CONFIG) return false;
+
+  const socket = tls.connect(465, "smtp.gmail.com", { servername: "smtp.gmail.com" });
+  await new Promise((resolve, reject) => {
+    socket.once("secureConnect", resolve);
+    socket.once("error", reject);
+  });
+
+  const encodedUser = Buffer.from(EMAIL_CONFIG.user).toString("base64");
+  const encodedPassword = Buffer.from(EMAIL_CONFIG.appPassword).toString("base64");
+  const safeBody = text.replace(/\r?\n\./g, "\r\n..").replace(/\n/g, "\r\n");
+  const message = [
+    `From: Success Club 2026 <${EMAIL_CONFIG.user}>`,
+    `To: ${to}`,
+    `Subject: ${subject}`,
+    "MIME-Version: 1.0",
+    "Content-Type: text/plain; charset=utf-8",
+    "",
+    safeBody,
+  ].join("\r\n");
+
+  try {
+    await smtpCommand(socket, "", 220);
+    await smtpCommand(socket, "EHLO localhost", 250);
+    await smtpCommand(socket, "AUTH LOGIN", 334);
+    await smtpCommand(socket, encodedUser, 334);
+    await smtpCommand(socket, encodedPassword, 235);
+    await smtpCommand(socket, `MAIL FROM:<${EMAIL_CONFIG.user}>`, 250);
+    await smtpCommand(socket, `RCPT TO:<${to}>`, 250);
+    await smtpCommand(socket, "DATA", 354);
+    await smtpCommand(socket, `${message}\r\n.`, 250);
+    await smtpCommand(socket, "QUIT", 221);
+    socket.end();
+    return true;
+  } catch (error) {
+    socket.destroy();
+    throw error;
+  }
+};
+
+const sendVerificationEmail = async (user) => {
+  try {
+    const sent = await sendMail({
+      to: user.email,
+      subject: "Your Success Club verification code",
+      text: `Hi ${user.name},
+
+Your Success Club 2026 verification code is:
+
+${user.verificationCode}
+
+This code expires in 15 minutes.
+
+Success Club 2026 Scholarship Portal`,
+    });
+
+    if (sent) console.log(`Verification email sent to ${user.email}`);
+    return sent;
+  } catch (error) {
+    console.warn(`Verification email failed for ${user.email}: ${error.message}`);
+    return false;
+  }
+};
+
 const findUserBySession = async (session) => {
   const users = await readJson(USERS_FILE, []);
   return users.find((user) => user.id === session.id);
@@ -254,13 +372,16 @@ const handleApi = async (request, response, pathname) => {
     await writeJson(USERS_FILE, users);
 
     console.log(`Verification code for ${email}: ${verificationCode}`);
+    const emailSent = await sendVerificationEmail(user);
 
     return sendJson(response, 201, {
       token: createToken(user),
       user: publicUser(user),
-      demoVerificationCode: verificationCode,
-      message:
-        "Account created. For this school demo, the verification code is shown on screen and logged by the backend.",
+      demoVerificationCode: emailSent ? null : verificationCode,
+      emailSent,
+      message: emailSent
+        ? "Account created. Verification code sent to your email."
+        : "Account created. Email is not configured, so the demo verification code is shown locally.",
     });
   }
 
@@ -317,9 +438,13 @@ const handleApi = async (request, response, pathname) => {
     await writeJson(USERS_FILE, users);
 
     console.log(`Verification code for ${user.email}: ${user.verificationCode}`);
+    const emailSent = await sendVerificationEmail(user);
     return sendJson(response, 200, {
-      demoVerificationCode: user.verificationCode,
-      message: "New verification code generated for the school demo.",
+      demoVerificationCode: emailSent ? null : user.verificationCode,
+      emailSent,
+      message: emailSent
+        ? "New verification code sent to your email."
+        : "Email is not configured, so the new demo code is shown locally.",
     });
   }
 
@@ -510,11 +635,13 @@ const server = http.createServer(async (request, response) => {
 });
 
 const start = async () => {
+  await loadCredentials();
   await writeJson(USERS_FILE, await readJson(USERS_FILE, []));
   await writeJson(APPLICATIONS_FILE, await readJson(APPLICATIONS_FILE, []));
   server.listen(PORT, () => {
     console.log(`Success Club portal running at http://localhost:${PORT}`);
     console.log(`Admin login: ${ADMIN.email} / ${ADMIN.password}`);
+    console.log(`Email delivery: ${EMAIL_CONFIG ? "Gmail SMTP enabled" : "demo/local codes only"}`);
   });
 };
 

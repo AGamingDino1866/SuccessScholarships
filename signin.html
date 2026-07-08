@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sign In - Success Club 2026</title>
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="assets/css/styles.css" />
   </head>
   <body>
     <header class="site-header">
@@ -28,19 +28,16 @@
             <button class="button secondary full" data-logout type="button">Sign Out</button>
             <div class="success-message" id="login-message" role="status" aria-live="polite"></div>
           </form>
-          <form class="auth-card" id="verify-form">
-            <h3>Verify email</h3>
-            <p class="admin-help">For this no-signup school demo, the backend shows a six-digit verification code after account creation and logs it in the terminal.</p>
-            <label>Verification code<input name="code" type="text" inputmode="numeric" maxlength="6" placeholder="123456" required /></label>
-            <button class="button primary full" type="submit">Verify Email</button>
-            <button class="button secondary full" id="resend-code-button" type="button">Generate New Code</button>
-            <div class="success-message" id="verify-message" role="status" aria-live="polite"></div>
+          <div class="auth-card">
+            <h3>Email verification</h3>
+            <p class="admin-help">If your account is not verified yet, sign in first and you will be sent to the OTP page.</p>
+            <a class="button secondary full" href="verify.html">Open OTP Page</a>
             <div class="success-message show" data-student-status>Not signed in.</div>
-          </form>
+          </div>
         </div>
       </section>
     </main>
     <footer><p>Need an account?</p><a href="signup.html">Create account</a></footer>
-    <script src="script.js"></script>
+    <script src="assets/js/script.js"></script>
   </body>
 </html>

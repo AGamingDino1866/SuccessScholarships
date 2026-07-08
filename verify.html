@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verify Email - Success Club 2026</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="assets/css/styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="nav-shell">
+        <a class="brand" href="index.html"><span class="brand-mark">SC</span><span><strong>Success Club</strong><small>Email verification</small></span></a>
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links"><span></span><span></span><span></span></button>
+        <div class="nav-links" id="nav-links">
+          <a href="index.html">Home</a><a href="status.html">Application Status</a><a href="scholarships.html">Scholarships</a><a href="signup.html">Sign Up</a><a href="signin.html">Sign In</a><a href="apply.html">Apply</a><a href="admin.html">Admin</a>
+        </div>
+      </nav>
+    </header>
+    <main>
+      <section class="section">
+        <div class="verification-layout">
+          <div class="section-heading left">
+            <p class="eyebrow">One-Time Password</p>
+            <h1>Verify your email before applying.</h1>
+            <p>Enter the six-digit code sent to your Gmail account. After verification, the application page unlocks for your student account.</p>
+            <div class="success-message show" data-student-status>Not signed in.</div>
+          </div>
+          <form class="auth-card" id="verify-form">
+            <h3>Email OTP</h3>
+            <label>Verification code<input name="code" type="text" inputmode="numeric" maxlength="6" placeholder="123456" required /></label>
+            <button class="button primary full" type="submit">Verify Email</button>
+            <button class="button secondary full" id="resend-code-button" type="button">Send New Code</button>
+            <div class="success-message" id="verify-message" role="status" aria-live="polite"></div>
+          </form>
+        </div>
+      </section>
+    </main>
+    <footer><p>Already verified?</p><a href="apply.html">Continue to application</a></footer>
+    <script src="assets/js/script.js"></script>
+  </body>
+</html>

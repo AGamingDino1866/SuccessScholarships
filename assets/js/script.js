@@ -129,12 +129,10 @@ const setupRegister = () => {
 
       setStudentSession(data);
       form.reset();
-      showMessage(
-        "#register-message",
-        `Account created. Demo verification code: ${data.demoVerificationCode}`,
-        true
-      );
-      loadCaptcha("#register-captcha");
+      const params = new URLSearchParams();
+      if (data.demoVerificationCode) params.set("demoCode", data.demoVerificationCode);
+      params.set("emailSent", String(Boolean(data.emailSent)));
+      window.location.href = `verify.html?${params.toString()}`;
     } catch (error) {
       showMessage("#register-message", error.message);
       loadCaptcha("#register-captcha");
@@ -158,6 +156,7 @@ const setupLogin = () => {
       setStudentSession(data);
       showMessage("#login-message", "Signed in successfully.", true);
       form.reset();
+      if (!data.user.emailVerified) window.location.href = "verify.html";
     } catch (error) {
       showMessage("#login-message", error.message);
     }
@@ -168,6 +167,16 @@ const setupVerifyEmail = () => {
   const form = document.querySelector("#verify-form");
   const resendButton = document.querySelector("#resend-code-button");
   if (!form) return;
+
+  const params = new URLSearchParams(window.location.search);
+  const demoCode = params.get("demoCode");
+  const emailSent = params.get("emailSent") === "true";
+
+  if (demoCode) {
+    showMessage("#verify-message", `Email is not configured yet. Demo code: ${demoCode}`, true);
+  } else if (emailSent) {
+    showMessage("#verify-message", "We sent a verification code to your email.", true);
+  }
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -184,6 +193,9 @@ const setupVerifyEmail = () => {
       updateAccountWidgets();
       showMessage("#verify-message", "Email verified. You can apply now.", true);
       form.reset();
+      setTimeout(() => {
+        window.location.href = "apply.html";
+      }, 900);
     } catch (error) {
       showMessage("#verify-message", error.message);
     }
@@ -197,7 +209,13 @@ const setupVerifyEmail = () => {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
       });
-      showMessage("#verify-message", `New demo code: ${data.demoVerificationCode}`, true);
+      showMessage(
+        "#verify-message",
+        data.demoVerificationCode
+          ? `Email is not configured yet. New demo code: ${data.demoVerificationCode}`
+          : "New verification code sent to your email.",
+        true
+      );
     } catch (error) {
       showMessage("#verify-message", error.message);
     }

@@ -269,7 +269,7 @@ h1 {
   position: relative;
   background:
     linear-gradient(90deg, rgba(23, 33, 28, 0.18), rgba(23, 33, 28, 0.02)),
-    url("assets/education-hero.png") center / cover;
+    url("../education-hero.png") center / cover;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: var(--shadow);
@@ -546,6 +546,7 @@ h1 {
 .eligibility-layout,
 .application-layout,
 .account-grid,
+.verification-layout,
 .contact {
   width: min(1180px, calc(100% - 32px));
   margin: 0 auto;
@@ -564,6 +565,10 @@ h1 {
 
 .account-grid {
   grid-template-columns: repeat(2, 1fr);
+}
+
+.verification-layout {
+  grid-template-columns: 0.9fr minmax(320px, 520px);
 }
 
 .auth-card h3 {
