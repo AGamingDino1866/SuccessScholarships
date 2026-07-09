@@ -2,7 +2,7 @@
 
 A scholarship website for the **Success Club 2026 - SDG 4: Quality Education** project.
 
-The website helps underprivileged students learn about scholarship support, prepare their application, submit the official application form, and check their application status.
+The website helps underprivileged students learn about scholarship support, create an account, submit an in-site application, and check their application status.
 
 ## Website Pages
 
@@ -12,7 +12,11 @@ The homepage introduces the mission of the scholarship portal: helping underpriv
 
 ### My Applications
 
-The My Applications page is the main student action page. It includes an eligibility checker, application checklist, application timeline, FAQ section, and button to open the official application form.
+The My Applications page is the main student action page. Students sign in, complete the built-in application form, use the eligibility checker, review the application checklist, and see the application timeline.
+
+### Sign In
+
+The Sign In page lets students create an account or sign in with email and password before submitting an application.
 
 ### Resources
 
@@ -24,22 +28,16 @@ The Status page lets students check their application status with an application
 
 ### Contact Us
 
-The contact page gives students a way to reach the scholarship team for help. Students are asked to use the same email address they used in the application form so their response can be found quickly.
+The contact page gives students a way to reach the scholarship team for help.
 
 ### Admin Page
 
-The admin page is hidden from the public menu. It is used by the review team to access submitted application responses and manage review notes/status privately.
+The admin page is hidden from the public menu. It lets the scholarship team sign in, review submitted applications, and update application statuses.
 
 ## Student Flow
 
 ```txt
-Visit Home -> Open My Applications -> Check eligibility -> Prepare details -> Submit form -> Check status
-```
-
-## Application Form
-
-```txt
-https://forms.gle/LWNga2iSiBCWmFnD7
+Visit Home -> Sign In -> Open My Applications -> Submit application -> Save application ID -> Check status
 ```
 
 ## Contact Email
@@ -48,29 +46,24 @@ https://forms.gle/LWNga2iSiBCWmFnD7
 successscholarships2026@gmail.com
 ```
 
-## Status Lookup
+## Firebase Collections
 
-Status lookup uses Firebase Firestore collection:
+Student applications are saved in:
+
+```txt
+applications
+```
+
+Public status lookup reads from:
 
 ```txt
 application_status
 ```
 
-Each application status should use the application ID as the document ID, such as:
+Each status record uses the application ID as the document ID, such as:
 
 ```txt
 SC2026-DEMO
-```
-
-Suggested fields:
-
-```txt
-application_id
-student_name
-city
-status
-message
-updated_at
 ```
 
 ## Project Theme
