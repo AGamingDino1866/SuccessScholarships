@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 import { getFirestore, collection, doc, getDocs, setDoc, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -15,10 +15,12 @@ const firebaseConfig = {
 const adminEmail = "successscholarships2026@gmail.com";
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
 const db = getFirestore(app);
 
-const adminLoginForm = document.querySelector("#admin-login-form");
+const adminLoginPanel = document.querySelector("#admin-login-panel");
 const adminLoginMessage = document.querySelector("#admin-login-message");
+const adminGoogleButton = document.querySelector("#admin-google-signin");
 const adminDashboard = document.querySelector("#admin-dashboard");
 const adminLogoutButton = document.querySelector("#admin-logout-button");
 const applicationsList = document.querySelector("#applications-list");
@@ -32,13 +34,13 @@ const showAdminMessage = (message, isSuccess = false) => {
 };
 
 const showDashboard = () => {
-  adminLoginForm.classList.add("hidden");
+  adminLoginPanel.classList.add("hidden");
   adminDashboard.classList.remove("hidden");
 };
 
 const showLogin = () => {
   adminDashboard.classList.add("hidden");
-  adminLoginForm.classList.remove("hidden");
+  adminLoginPanel.classList.remove("hidden");
 };
 
 const renderApplications = (records) => {
@@ -48,7 +50,7 @@ const renderApplications = (records) => {
   }
 
   applicationsList.innerHTML = records.map((record) => `
-    <article class="application-row" data-id="${escapeHtml(record.application_id)}">
+    <article class="application-row" data-id="${escapeHtml(record.application_id)}" data-city="${escapeHtml(record.city)}" data-student="${escapeHtml(record.student_name)}">
       <header><h2>${escapeHtml(record.student_name)}</h2><span class="pill">${escapeHtml(record.status || "Received")}</span></header>
       <div class="application-grid">
         <div><strong>Application ID</strong>${escapeHtml(record.application_id)}</div>
@@ -63,7 +65,7 @@ const renderApplications = (records) => {
       <form class="status-editor">
         <select name="status"><option ${record.status === "Received" ? "selected" : ""}>Received</option><option ${record.status === "Under Review" ? "selected" : ""}>Under Review</option><option ${record.status === "Needs Info" ? "selected" : ""}>Needs Info</option><option ${record.status === "Approved" ? "selected" : ""}>Approved</option><option ${record.status === "Rejected" ? "selected" : ""}>Rejected</option></select>
         <input name="message" value="${escapeHtml(record.message || "Your application has been received and is waiting for review.")}" />
-        <button class="button secondary" type="submit">Update</button>
+        <button class="button secondary" type="submit">Update Status</button>
       </form>
     </article>
   `).join("");
@@ -76,18 +78,16 @@ const loadApplications = async () => {
   renderApplications(records);
 };
 
-adminLoginForm.addEventListener("submit", async (event) => {
-  event.preventDefault();
-  const formData = new FormData(adminLoginForm);
-  const email = String(formData.get("email") || "").trim().toLowerCase();
-  const password = String(formData.get("password") || "");
-  if (email !== adminEmail) {
-    showAdminMessage("Use the scholarship admin email.");
-    return;
-  }
-  showAdminMessage("Signing in...");
+adminGoogleButton.addEventListener("click", async () => {
+  showAdminMessage("Opening Google sign-in...");
   try {
-    await signInWithEmailAndPassword(auth, email, password);
+    const credential = await signInWithPopup(auth, provider);
+    if (credential.user.email.toLowerCase() !== adminEmail) {
+      await signOut(auth);
+      showAdminMessage("That Google account is not the admin account.");
+      return;
+    }
+    showAdminMessage("Signed in.", true);
   } catch (error) {
     showAdminMessage(error.message.replace("Firebase: ", ""));
   }
@@ -105,8 +105,8 @@ applicationsList.addEventListener("submit", async (event) => {
   await updateDoc(doc(db, "applications", applicationId), { status, message, updated_at: new Date() });
   await setDoc(doc(db, "application_status", applicationId), {
     application_id: applicationId,
-    student_name: row.querySelector("h2").textContent,
-    city: row.querySelector(".application-grid div:nth-child(3)").textContent.replace("City", "").trim(),
+    student_name: row.dataset.student,
+    city: row.dataset.city,
     status,
     message,
     updated_at: new Date().toISOString().slice(0, 10)
