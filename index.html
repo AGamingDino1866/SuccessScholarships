@@ -6,109 +6,67 @@
     <title>Success Club 2026 Scholarship Portal</title>
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="assets/css/styles.css" />
+    <style>
+      body.home-redesign { background: #f4f6f0; }
+      .centered-header { position: sticky; top: 0; background: transparent; border-bottom: 0; pointer-events: none; }
+      .centered-nav { min-height: 84px; justify-content: center; pointer-events: auto; }
+      .centered-nav .logo-only { position: absolute; left: 0; }
+      .logo-only span + span { display: none; }
+      .centered-nav .nav-links { padding: 8px; border: 1px solid rgba(23,61,49,.13); border-radius: 8px; background: rgba(255,255,255,.86); box-shadow: 0 18px 42px rgba(23,33,28,.12); backdrop-filter: blur(18px); }
+      .scroll-hero { min-height: 145vh; position: relative; display: grid; place-items: start center; padding-top: 28px; }
+      .scroll-hero-image { position: sticky; top: 92px; width: min(1120px, calc(100% - 32px)); height: min(72vh, 680px); border-radius: 8px; background: linear-gradient(180deg, rgba(7,18,13,.1), rgba(7,18,13,.72)), url("assets/education-hero.png") center/cover; box-shadow: 0 34px 90px rgba(23,33,28,.26); opacity: var(--hero-opacity,1); transform: translateY(calc(var(--hero-progress,0) * -22px)) scale(calc(1 - var(--hero-progress,0) * .045)); }
+      .scroll-hero-overlay { position: sticky; top: 32vh; z-index: 2; width: min(980px, calc(100% - 36px)); margin-top: -58vh; text-align: center; color: #fff; opacity: var(--hero-opacity,1); transform: translateY(calc(var(--hero-progress,0) * -34px)); }
+      .scroll-hero-overlay .eyebrow { color: #ffe3ef; }
+      .scroll-hero-overlay h1 { max-width: 980px; margin: 0 auto; font-size: clamp(2.6rem, 8vw, 7.4rem); line-height: .94; text-wrap: balance; }
+      .scroll-hero-actions { margin-top: 32px; display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; }
+      .scroll-intro { width: min(980px, calc(100% - 32px)); margin: -18vh auto 38px; padding: 72px 0 24px; position: relative; z-index: 4; text-align: center; }
+      .scroll-intro h2, .home-cta h2 { font-size: clamp(2rem, 5vw, 4.5rem); line-height: 1; margin-bottom: 0; text-wrap: balance; }
+      .topic-river { width: min(980px, calc(100% - 32px)); margin: 0 auto; display: grid; gap: 18px; }
+      .topic-river article { min-height: 190px; display: grid; grid-template-columns: 80px .52fr 1fr; gap: 20px; align-items: center; padding: 28px; border-top: 1px solid rgba(23,61,49,.14); }
+      .topic-river span { color: var(--rose-dark); font-weight: 900; font-size: .88rem; }
+      .topic-river h3 { margin: 0; font-size: clamp(1.8rem, 4vw, 3.4rem); line-height: 1; }
+      .topic-river p { margin: 0; color: #4d5c53; font-size: 1.05rem; line-height: 1.7; }
+      .home-cta { width: min(980px, calc(100% - 32px)); margin: 80px auto; padding: 56px 0 74px; text-align: center; border-top: 1px solid rgba(23,61,49,.14); border-bottom: 1px solid rgba(23,61,49,.14); }
+      .home-cta .hero-actions { justify-content: center; }
+      @media (max-width: 920px) { .centered-nav{justify-content:space-between}.centered-nav .logo-only{position:static}.topic-river article{grid-template-columns:1fr;min-height:auto;align-items:start}.scroll-hero-image{top:82px;height:66vh} }
+      @media (max-width: 640px) { .scroll-hero{min-height:128vh}.scroll-hero-image{width:calc(100% - 24px);height:62vh}.scroll-hero-overlay{top:28vh}.scroll-hero-actions .button,.home-cta .button{width:100%}.topic-river article{padding:24px 0} }
+    </style>
   </head>
-  <body>
-    <header class="site-header">
-      <nav class="nav-shell" aria-label="Main navigation">
-        <a class="brand" href="index.html">
-          <span class="brand-mark">SC</span>
-          <span><strong>Success Club</strong><small>Scholarship Portal 2026</small></span>
-        </a>
-        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links">
-          <span></span><span></span><span></span>
-        </button>
+  <body class="home-redesign">
+    <header class="site-header centered-header">
+      <nav class="nav-shell centered-nav" aria-label="Main navigation">
+        <a class="brand compact-brand logo-only" href="index.html" aria-label="Success Club home"><span class="brand-mark">SC</span></a>
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links"><span></span><span></span><span></span></button>
         <div class="nav-links" id="nav-links">
           <a class="active" href="index.html">Home</a>
-          <a href="status.html">Application Status</a><a href="scholarships.html">Scholarships</a>
-          <a href="signup.html">Sign Up</a>
-          <a href="signin.html">Sign In</a>
-          <a href="apply.html">Apply</a>
-          <a href="admin.html">Admin</a>
+          <a href="apply.html">My Applications</a>
+          <a href="account.html">Sign Up/Sign In</a>
+          <a href="contact.html">Contact Us</a>
         </div>
       </nav>
     </header>
-
     <main>
-      <section class="hero" id="home">
-        <div class="hero-art" aria-hidden="true">
-          <div class="orbit orbit-one"></div>
-          <div class="orbit orbit-two"></div>
-          <div class="hero-card mini-stat"><span>SDG 4</span><strong>Quality Education</strong></div>
-          <div class="hero-card mini-deadline"><span>Programme</span><strong>1 July - Mid August 2026</strong></div>
-        </div>
-        <div class="hero-copy">
-          <p class="eyebrow">Success Club 2026 - AI Club</p>
-          <h1>Helping underprivileged students continue their education.</h1>
-          <p>
-            A scholarship portal for students with the ability to succeed, but without the
-            financial support needed to stay in school.
-          </p>
-          <div class="hero-actions">
-            <a class="button primary" href="signup.html">Create Account</a>
-            <a class="button secondary" href="scholarships.html">Explore Scholarships</a>
-          </div>
-          <div class="hero-meta"><span>Karachi</span><span>Lahore</span><span>Islamabad</span></div>
-        </div>
+      <section class="scroll-hero" id="home"><div class="scroll-hero-image" aria-hidden="true"></div><div class="scroll-hero-overlay"><p class="eyebrow">Success Club 2026</p><h1>Helping underprivileged students continue their education.</h1><div class="scroll-hero-actions"><a class="button primary" href="apply.html">My Applications</a><a class="button secondary" href="account.html">Sign Up/Sign In</a></div></div></section>
+      <section class="scroll-intro"><p class="eyebrow">Why It Matters</p><h2>A clearer path from student need to scholarship support.</h2></section>
+      <section class="topic-river" aria-label="Scholarship topics">
+        <article><span>01</span><h3>Access</h3><p>Education should stay within reach when family income becomes uncertain. A simple online portal helps students ask for support without confusion.</p></article>
+        <article><span>02</span><h3>Dignity</h3><p>Students deserve a respectful process. Clear forms and private review let applicants share their needs without feeling exposed or judged.</p></article>
+        <article><span>03</span><h3>Opportunity</h3><p>Small financial support can protect a student from leaving school. One scholarship can keep books, transport, fees, and focus together.</p></article>
+        <article><span>04</span><h3>Trust</h3><p>Verified student accounts make applications easier to manage. Admins can review real details and contact students through reliable information.</p></article>
+        <article><span>05</span><h3>Confidence</h3><p>Tracking application status gives students reassurance. They can see progress instead of waiting blindly and wondering what happened next.</p></article>
+        <article><span>06</span><h3>Fair Review</h3><p>A shared application format helps every student answer the same core questions. That makes reviewing needs and goals more consistent.</p></article>
+        <article><span>07</span><h3>Community</h3><p>Success Club connects students, admins, and supporters around one purpose: helping capable learners continue school when money becomes a barrier.</p></article>
+        <article><span>08</span><h3>Focus</h3><p>Students should spend more time learning and less time chasing paperwork. The portal gathers key details in one organized place.</p></article>
+        <article><span>09</span><h3>Growth</h3><p>Quality education creates long-term change. Supporting one student can influence families, classrooms, neighborhoods, and future choices.</p></article>
+        <article><span>10</span><h3>SDG 4</h3><p>This project supports Quality Education by showing how technology can make scholarship access clearer, faster, and easier to understand.</p></article>
       </section>
-
-      <section class="quick-panel" aria-label="Portal highlights">
-        <article><span class="panel-icon">01</span><h2>Verified Accounts</h2><p>Applications are linked to student accounts and verified emails.</p></article>
-        <article><span class="panel-icon">02</span><h2>CAPTCHA Guard</h2><p>Signup and application submissions use a server-checked math CAPTCHA.</p></article>
-        <article><span class="panel-icon">03</span><h2>Admin Review</h2><p>Admins can view student information and update application status.</p></article>
-      </section>
-
-      <section class="section home-story">
-        <div class="section-heading left">
-          <p class="eyebrow">Our Purpose</p>
-          <h2>Education should not disappear because a family cannot afford it.</h2>
-        </div>
-        <div class="story-grid">
-          <article>
-            <p>
-              Success Club 2026 is built around a simple but important idea: many students are
-              capable, hardworking, and serious about their future, but their education is at risk
-              because their families are under financial pressure. Across Pakistan, a student may
-              have the discipline to study, the ambition to grow, and the potential to contribute
-              to society, yet still struggle with school fees, transport, books, uniforms, or basic
-              learning tools. This portal exists to make that problem easier to understand and
-              easier to act on.
-            </p>
-            <p>
-              The scholarship programme focuses on underprivileged students who want to continue
-              learning but need support at the right time. Instead of making students chase
-              confusing paper forms or depend on random contacts, the website gives them one clear
-              place to create an account, read scholarship options, submit their information, and
-              wait for review. The goal is not just to collect applications. The goal is to create a
-              fairer process where every student gives the same important details and admins can
-              review them in an organized way.
-            </p>
-          </article>
-          <article>
-            <p>
-              The backend also protects the project from fake or spam submissions. A student must
-              create an account, use a valid email format, provide a Pakistan mobile number, verify
-              their email with a code, and pass a CAPTCHA before applying. Their name, email, phone,
-              and city are taken from the account, so the application cannot be filled with random
-              contact details. This makes the admin page more useful because the information shown
-              there belongs to the signed-in student account.
-            </p>
-            <p>
-              For Success Club, this website represents SDG 4: Quality Education. It shows how
-              technology can support a real social mission: finding students who deserve a chance,
-              reducing messy manual work, and giving admins a direct way to contact applicants. In
-              a real launch, the same idea could grow with document uploads, interviews, school
-              verification, and email delivery. For this school project, it demonstrates the full
-              journey from student need to admin review in a clear, working prototype.
-            </p>
-          </article>
-        </div>
-      </section>
+      <section class="home-cta"><p class="eyebrow">Start Here</p><h2>Apply, review your status, or create your student account.</h2><div class="hero-actions"><a class="button primary" href="apply.html">Open My Applications</a><a class="button secondary" href="account.html">Sign Up/Sign In</a></div></section>
     </main>
-
-    <footer>
-      <p>Success Club 2026 Scholarship Portal - SDG 4 Quality Education</p>
-      <a href="contact.html">Contact</a>
-    </footer>
+    <footer><p>Success Club 2026 Scholarship Portal - SDG 4 Quality Education</p><a href="contact.html">Contact Us</a></footer>
     <script src="assets/js/script.js"></script>
+    <script>
+      const hero=document.querySelector('.scroll-hero');
+      if(hero){const update=()=>{const r=hero.getBoundingClientRect();const d=Math.max(1,r.height-innerHeight);const p=Math.min(1,Math.max(0,-r.top/d));const f=Math.min(1,Math.max(0,(p-.12)/.48));document.documentElement.style.setProperty('--hero-progress',p.toFixed(3));document.documentElement.style.setProperty('--hero-opacity',(1-f).toFixed(3));};update();addEventListener('scroll',update,{passive:true});addEventListener('resize',update);}
+    </script>
   </body>
 </html>
