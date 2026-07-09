@@ -18,6 +18,7 @@ const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 const db = getFirestore(app);
 
+const adminLayout = document.querySelector("#admin-layout");
 const adminLoginPanel = document.querySelector("#admin-login-panel");
 const adminLoginMessage = document.querySelector("#admin-login-message");
 const adminGoogleButton = document.querySelector("#admin-google-signin");
@@ -36,11 +37,13 @@ const showAdminMessage = (message, isSuccess = false) => {
 const showDashboard = () => {
   adminLoginPanel.classList.add("hidden");
   adminDashboard.classList.remove("hidden");
+  adminLayout.classList.add("dashboard-open");
 };
 
 const showLogin = () => {
   adminDashboard.classList.add("hidden");
   adminLoginPanel.classList.remove("hidden");
+  adminLayout.classList.remove("dashboard-open");
 };
 
 const renderApplications = (records) => {
@@ -59,8 +62,8 @@ const renderApplications = (records) => {
         <div><strong>Grade</strong>${escapeHtml(record.grade)}</div>
         <div><strong>School</strong>${escapeHtml(record.school)}</div>
         <div><strong>Guardian</strong>${escapeHtml(record.guardian_name)} / ${escapeHtml(record.guardian_phone)}</div>
-        <div><strong>Need</strong>${escapeHtml(record.need_statement)}</div>
-        <div><strong>Goals</strong>${escapeHtml(record.goals)}</div>
+        <div class="wide"><strong>Need</strong>${escapeHtml(record.need_statement)}</div>
+        <div class="wide"><strong>Goals</strong>${escapeHtml(record.goals)}</div>
       </div>
       <form class="status-editor">
         <select name="status"><option ${record.status === "Received" ? "selected" : ""}>Received</option><option ${record.status === "Under Review" ? "selected" : ""}>Under Review</option><option ${record.status === "Needs Info" ? "selected" : ""}>Needs Info</option><option ${record.status === "Approved" ? "selected" : ""}>Approved</option><option ${record.status === "Rejected" ? "selected" : ""}>Rejected</option></select>
