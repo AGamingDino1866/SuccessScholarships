@@ -7,7 +7,7 @@
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="assets/css/styles.css" />
     <style>
-      .centered-header{position:sticky;top:0;background:transparent;border-bottom:0;pointer-events:none}.centered-nav{min-height:84px;justify-content:center;pointer-events:auto}.centered-nav .logo-only{position:absolute;left:50px}.centered-nav .nav-links{padding:8px;border:1px solid rgba(23,61,49,.13);border-radius:8px;background:rgba(255,255,255,.86);box-shadow:0 18px 42px rgba(23,33,28,.12);backdrop-filter:blur(18px)}.application-hero{width:min(1120px,calc(100% - 32px));min-height:calc(100vh - 84px);margin:0 auto;display:grid;grid-template-columns:.9fr 1.1fr;gap:34px;align-items:center;padding:76px 0 38px}.application-hero h1{font-size:clamp(2.6rem,7vw,6rem);line-height:.96;margin:0 0 22px}.application-hero p{max-width:620px;color:var(--muted);font-size:1.12rem;line-height:1.75}.application-action-card,.feature-panel,.faq-panel,.scholarship-mini-card{padding:30px;border:1px solid var(--line);border-radius:8px;background:#fff;box-shadow:var(--soft-shadow)}.application-action-card h2,.feature-panel h2,.faq-panel h2,.scholarship-strip h2{font-size:clamp(1.9rem,4vw,3.4rem);line-height:1;margin:0 0 18px}.application-steps{display:grid;gap:14px;margin:28px 0}.application-steps div{display:grid;grid-template-columns:38px 1fr;gap:14px;align-items:center;padding:14px 0;border-top:1px solid var(--line)}.application-steps span,.timeline span{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--rose);color:#fff;font-weight:900}.status-note{margin-top:20px;padding:18px;border-radius:8px;background:#f4f6f0;color:#4d5c53}.button-row{display:flex;gap:12px;flex-wrap:wrap}.button-row .button{flex:1 1 220px}.portal-features,.scholarship-strip{width:min(1120px,calc(100% - 32px));margin:0 auto 74px;display:grid;gap:22px}.scholarship-strip{margin-top:10px}.scholarship-card-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.scholarship-mini-card{display:grid;gap:16px;align-content:start;min-height:300px}.scholarship-mini-card.featured{background:var(--green);color:#fff}.scholarship-mini-card.featured p,.scholarship-mini-card.featured li{color:rgba(255,255,255,.78)}.scholarship-mini-card h3{font-size:1.45rem;margin:0}.scholarship-mini-card p,.scholarship-mini-card li{color:var(--muted);line-height:1.65}.scholarship-mini-card ul{margin:0;padding-left:18px}.feature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}.checker-form{display:grid;gap:14px}.checker-form label{display:grid;gap:8px;font-weight:800}.checker-form select{width:100%;padding:14px 16px;border:1px solid var(--line);border-radius:8px;background:#fff;font:inherit}.checker-result{margin-top:16px;padding:18px;border-radius:8px;background:#f4f6f0;color:#173d31;font-weight:800;line-height:1.55}.checklist{display:grid;gap:12px;margin:0;padding:0;list-style:none}.checklist li{display:grid;grid-template-columns:28px 1fr;gap:12px;align-items:start;padding:12px 0;border-top:1px solid var(--line)}.checklist input{width:20px;height:20px;accent-color:var(--rose)}.timeline{display:grid;grid-template-columns:repeat(7,1fr);gap:10px}.timeline div{display:grid;gap:10px;align-content:start;padding:14px;border:1px solid var(--line);border-radius:8px;background:#fff;min-height:124px}.timeline strong{font-size:.92rem}.faq-list{display:grid;gap:10px}.faq-list details{border:1px solid var(--line);border-radius:8px;background:#fff;padding:16px}.faq-list summary{cursor:pointer;font-weight:900}.faq-list p{margin:12px 0 0;color:var(--muted);line-height:1.65}.launch-modal{position:fixed;inset:0;z-index:50;display:none;place-items:center;padding:20px;background:rgba(8,18,14,.58)}.launch-modal.show{display:grid}.modal-card{width:min(560px,100%);padding:28px;border-radius:8px;background:#fff;box-shadow:0 28px 80px rgba(0,0,0,.28)}.modal-card h2{font-size:clamp(1.8rem,5vw,3rem);line-height:1;margin:0 0 14px}.modal-card p{color:var(--muted);line-height:1.7}.modal-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}.modal-actions .button{flex:1 1 190px}@media(max-width:920px){.centered-nav{justify-content:space-between}.centered-nav .logo-only{position:static}.application-hero,.feature-grid{grid-template-columns:1fr;padding-top:40px}.timeline,.scholarship-card-grid{grid-template-columns:1fr 1fr}}@media(max-width:640px){.timeline,.scholarship-card-grid{grid-template-columns:1fr}.application-action-card,.feature-panel,.faq-panel,.scholarship-mini-card{padding:22px}}
+      :root{--ink:#173d31;--muted:#607066;--paper:#f7f8f4;--card:#fff;--rose:#d56b91;--gold:#f1b84b;--sky:#79b7c8;--line:rgba(23,61,49,.14);--shadow:0 24px 70px rgba(23,33,28,.14)}body{background:var(--paper);color:var(--ink)}.centered-header{position:sticky;top:0;z-index:40;background:rgba(247,248,244,.78);border-bottom:1px solid rgba(23,61,49,.08);backdrop-filter:blur(18px)}.centered-nav{min-height:82px;justify-content:center}.centered-nav .logo-only{position:absolute;left:50px}.logo-only span+span{display:none}.centered-nav .nav-links{padding:8px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.82);box-shadow:0 16px 40px rgba(23,33,28,.1)}.nav-links a{border-radius:999px}.nav-links a.active,.nav-links a:hover{background:#173d31;color:white}.portal-shell{width:min(1180px,calc(100% - 32px));margin:36px auto 82px;display:grid;gap:24px}.apply-hero{display:grid;grid-template-columns:1fr .86fr;gap:22px}.hero-card,.portal-card,.tool-panel,.scholarship-card,.faq-panel,.timeline-card{border:1px solid var(--line);border-radius:18px;background:var(--card);box-shadow:var(--shadow)}.hero-card{min-height:540px;padding:clamp(28px,5vw,60px);background:linear-gradient(135deg,rgba(23,61,49,.95),rgba(23,61,49,.72)),url("assets/education-hero.png") center/cover;color:#fff;display:grid;align-content:end}.eyebrow{font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--rose);font-size:.78rem}.hero-card .eyebrow{color:#ffdbe8}.hero-card h1{font-size:clamp(2.7rem,6vw,5.8rem);line-height:.95;margin:10px 0 18px}.hero-card p{color:rgba(255,255,255,.86);font-size:1.08rem;line-height:1.7}.portal-card{padding:30px}.portal-card h2,.tool-panel h2,.faq-panel h2{font-size:clamp(1.9rem,4vw,3.5rem);line-height:1;margin:8px 0 16px}.portal-card p,.tool-panel p,.scholarship-card p,.timeline-card p,.faq-list p{color:var(--muted);line-height:1.7}.button{border-radius:999px}.button-row{display:flex;gap:12px;flex-wrap:wrap}.button-row .button{flex:1 1 190px}.launch-note{margin-top:18px;padding:16px;border-radius:12px;background:#eef3eb;color:#53645a;font-weight:800}.scholarship-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.scholarship-card{padding:24px;box-shadow:none;min-height:260px;display:grid;align-content:start;gap:12px}.scholarship-card.featured{background:#173d31;color:#fff}.scholarship-card.featured p,.scholarship-card.featured li{color:rgba(255,255,255,.78)}.scholarship-card h3{font-size:1.4rem;margin:0}.scholarship-card ul{margin:0;padding-left:18px}.scholarship-card li{color:var(--muted);line-height:1.6}.scholarship-card:nth-child(2){border-top:5px solid var(--gold)}.scholarship-card:nth-child(3){border-top:5px solid var(--sky)}.tool-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.tool-panel{padding:28px;box-shadow:none}.checker-form{display:grid;gap:14px}.checker-form label{display:grid;gap:8px;font-weight:900}.checker-form select{width:100%;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:#fff;font:inherit}.checker-result{margin-top:16px;padding:18px;border-radius:12px;background:#eef3eb;color:#173d31;font-weight:900;line-height:1.55}.checklist{display:grid;gap:8px;margin:0;padding:0;list-style:none}.checklist li{display:grid;grid-template-columns:28px 1fr;gap:12px;align-items:start;padding:12px 0;border-top:1px solid var(--line);color:var(--muted);line-height:1.5}.checklist input{width:20px;height:20px;accent-color:var(--rose)}.timeline-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.timeline-card{padding:22px;box-shadow:none}.timeline-card span{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:var(--rose);color:#fff;font-weight:900;margin-bottom:14px}.faq-panel{padding:30px;box-shadow:none}.faq-list{display:grid;gap:10px}.faq-list details{border:1px solid var(--line);border-radius:12px;background:#fff;padding:16px}.faq-list summary{cursor:pointer;font-weight:900}.faq-list p{margin:12px 0 0}.launch-modal{position:fixed;inset:0;z-index:60;display:none;place-items:center;padding:20px;background:rgba(8,18,14,.58)}.launch-modal.show{display:grid}.modal-card{width:min(560px,100%);padding:30px;border-radius:18px;background:#fff;box-shadow:0 28px 80px rgba(0,0,0,.28)}.modal-card h2{font-size:clamp(1.9rem,5vw,3.3rem);line-height:1;margin:0 0 14px}.modal-card p{color:var(--muted);line-height:1.7}.modal-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}.modal-actions .button{flex:1 1 190px}@media(max-width:920px){.centered-nav{justify-content:space-between}.centered-nav .logo-only{position:static}.apply-hero,.tool-grid{grid-template-columns:1fr}.scholarship-grid,.timeline-grid{grid-template-columns:1fr 1fr}.hero-card{min-height:420px}}@media(max-width:640px){.centered-nav .nav-links{border-radius:14px}.scholarship-grid,.timeline-grid{grid-template-columns:1fr}.hero-card,.portal-card,.tool-panel,.scholarship-card,.faq-panel,.timeline-card,.modal-card{border-radius:12px}.portal-card,.tool-panel,.faq-panel{padding:22px}}
     </style>
   </head>
   <body>
@@ -18,153 +18,38 @@
         <div class="nav-links" id="nav-links"><a href="index.html">Home</a><a class="active" href="apply.html">My Applications</a><a href="contact.html">Contact Us</a></div>
       </nav>
     </header>
-    <main>
-      <section class="application-hero">
-        <div>
-          <p class="eyebrow">My Applications</p>
-          <h1>Prepare, check, and apply in one place.</h1>
-          <p>The portal helps students check basic fit, gather details, understand the review process, and then open the official Success Scholarships Google Form.</p>
-        </div>
-        <article class="application-action-card">
-          <p class="eyebrow">Start Here</p>
-          <h2>Open the application form.</h2>
-          <p>Use the same email you want admins to contact. Google limits the form to one response per email.</p>
-          <div class="application-steps">
-            <div><span>1</span><strong>Check eligibility and gather your details.</strong></div>
-            <div><span>2</span><strong>Open the official Google application form.</strong></div>
-            <div><span>3</span><strong>Submit once and wait for review.</strong></div>
-          </div>
-          <div class="button-row">
-            <button class="button primary" type="button" data-open-form>Start Application</button>
-            <a class="button secondary" href="contact.html">Ask a Question</a>
-          </div>
-          <p class="status-note">To check your application status, contact <strong>successscholarships2026@gmail.com</strong> with the email you used on the form.</p>
-        </article>
+    <main class="portal-shell">
+      <section class="apply-hero">
+        <div class="hero-card"><p class="eyebrow">My Applications</p><h1>Prepare your scholarship application here.</h1><p>No account is needed. Use this page to check eligibility, prepare your documents, review the timeline, and launch the official Google Form.</p></div>
+        <aside class="portal-card"><p class="eyebrow">Official form</p><h2>One response per email.</h2><p>Open the form only when your information is ready. The Google Form is the official application submission route.</p><div class="button-row"><button class="button" type="button" data-open-form>Start Application</button><a class="button secondary" href="contact.html">Ask a Question</a></div><div class="launch-note">Tip: use the same email for questions and application status updates.</div></aside>
       </section>
-
-      <section class="scholarship-strip" aria-label="Scholarship options">
-        <div>
-          <p class="eyebrow">Scholarship Cards</p>
-          <h2>Choose the support that matches your need.</h2>
-        </div>
-        <div class="scholarship-card-grid">
-          <article class="scholarship-mini-card">
-            <span class="tag">Merit + Need</span>
-            <h3>Foundation Learning Grant</h3>
-            <p>Support for students who need help with school fees, books, and learning supplies.</p>
-            <ul><li>Grades 6-12</li><li>Financial need review</li><li>Best for basic school costs</li></ul>
-          </article>
-          <article class="scholarship-mini-card featured">
-            <span class="tag">SDG 4</span>
-            <h3>Quality Education Scholarship</h3>
-            <p>The main Success Club scholarship for capable students facing financial hardship.</p>
-            <ul><li>Academic potential</li><li>Need-based support</li><li>Best overall option</li></ul>
-          </article>
-          <article class="scholarship-mini-card">
-            <span class="tag">Digital Access</span>
-            <h3>Digital Study Support</h3>
-            <p>Help for students who need technology access for schoolwork and online study.</p>
-            <ul><li>Device or internet need</li><li>Study tools support</li><li>Best for digital learning</li></ul>
-          </article>
-        </div>
+      <section><div class="section-title"><p class="eyebrow">Scholarship cards</p><h2>What this program focuses on.</h2></div><div class="scholarship-grid"><article class="scholarship-card featured"><h3>Need-Based Support</h3><p>For students whose education is affected by financial hardship, but who have the motivation to keep learning.</p><ul><li>Financial need</li><li>Continued schooling</li><li>Clear applicant details</li></ul></article><article class="scholarship-card"><h3>Quality Education</h3><p>Aligned with SDG 4, the program supports access to learning opportunities for underprivileged students.</p><ul><li>School continuity</li><li>Merit and need</li><li>Student potential</li></ul></article><article class="scholarship-card"><h3>City Chapters</h3><p>The Success Club 2026 effort is connected to Karachi, Lahore, and Islamabad activity.</p><ul><li>Karachi</li><li>Lahore</li><li>Islamabad</li></ul></article></div></section>
+      <section class="tool-grid">
+        <article class="tool-panel"><p class="eyebrow">Eligibility checker</p><h2>Quick readiness check.</h2><form class="checker-form" id="eligibility-checker"><label>Are you currently enrolled in school?<select name="school"><option value="">Choose one</option><option value="yes">Yes</option><option value="no">No</option></select></label><label>Do you need financial support to continue studying?<select name="need"><option value="">Choose one</option><option value="yes">Yes</option><option value="no">No</option></select></label><label>Can you provide accurate guardian/contact details?<select name="contact"><option value="">Choose one</option><option value="yes">Yes</option><option value="no">No</option></select></label><button class="button" type="submit">Check Eligibility</button></form><div class="checker-result" id="checker-result">Answer the questions to see your application readiness.</div></article>
+        <article class="tool-panel"><p class="eyebrow">Application checklist</p><h2>Prepare before opening the form.</h2><ul class="checklist"><li><input type="checkbox" /> Student full name and current class</li><li><input type="checkbox" /> Parent or guardian contact information</li><li><input type="checkbox" /> School name and city</li><li><input type="checkbox" /> Short explanation of financial need</li><li><input type="checkbox" /> Correct email address for updates</li><li><input type="checkbox" /> Review all answers before submitting</li></ul></article>
       </section>
-
-      <section class="portal-features">
-        <div class="feature-grid">
-          <article class="feature-panel">
-            <p class="eyebrow">Eligibility Checker</p>
-            <h2>Find your best fit.</h2>
-            <form class="checker-form" id="eligibility-checker">
-              <label>Current grade<select name="grade"><option value="middle">Grade 6-8</option><option value="high">Grade 9-10</option><option value="senior">Grade 11-12</option></select></label>
-              <label>Main need<select name="need"><option value="fees">School fees or books</option><option value="quality">Overall scholarship support</option><option value="digital">Laptop, internet, or digital study tools</option></select></label>
-              <label>Household income<select name="income"><option value="low">Below PKR 60,000</option><option value="mid">PKR 60,000 - 100,000</option><option value="high">Above PKR 100,000</option></select></label>
-              <button class="button secondary" type="submit">Check Fit</button>
-            </form>
-            <div class="checker-result" id="checker-result">Choose your details and check which scholarship path fits best.</div>
-          </article>
-
-          <article class="feature-panel">
-            <p class="eyebrow">Application Checklist</p>
-            <h2>Have this ready.</h2>
-            <ul class="checklist">
-              <li><input type="checkbox" /><span>Active email address you can access</span></li>
-              <li><input type="checkbox" /><span>Full name, city, and phone number</span></li>
-              <li><input type="checkbox" /><span>Current school and grade</span></li>
-              <li><input type="checkbox" /><span>Guardian name and contact details</span></li>
-              <li><input type="checkbox" /><span>Household income range</span></li>
-              <li><input type="checkbox" /><span>Short statement about your goals and need</span></li>
-            </ul>
-          </article>
-        </div>
-
-        <article class="feature-panel">
-          <p class="eyebrow">Application Timeline</p>
-          <h2>What happens next?</h2>
-          <div class="timeline" aria-label="Application timeline">
-            <div><span>1</span><strong>Learn</strong><small>Read the portal details.</small></div>
-            <div><span>2</span><strong>Check</strong><small>Use the eligibility checker.</small></div>
-            <div><span>3</span><strong>Prepare</strong><small>Gather application details.</small></div>
-            <div><span>4</span><strong>Submit</strong><small>Send the Google Form.</small></div>
-            <div><span>5</span><strong>Review</strong><small>Admins review responses.</small></div>
-            <div><span>6</span><strong>Contact</strong><small>The team emails if needed.</small></div>
-            <div><span>7</span><strong>Decision</strong><small>Final status is shared.</small></div>
-          </div>
-        </article>
-
-        <article class="faq-panel">
-          <p class="eyebrow">FAQ</p>
-          <h2>Quick answers.</h2>
-          <div class="faq-list">
-            <details><summary>Can I submit more than once?</summary><p>No. The form is set up for one response per email, so use the correct email and review before submitting.</p></details>
-            <details><summary>How do I check my application status?</summary><p>Email successscholarships2026@gmail.com using the same email address you submitted in the form.</p></details>
-            <details><summary>Which email should I use?</summary><p>Use an email you can access regularly. The review team may contact you there for updates or missing information.</p></details>
-            <details><summary>What happens after I submit?</summary><p>Your response goes into the private review sheet. Admins review submissions and contact selected students or students who need to provide more details.</p></details>
-            <details><summary>Can I edit my response later?</summary><p>Assume the answer is no. Check everything carefully before submitting the final form.</p></details>
-          </div>
-        </article>
-      </section>
+      <section><div class="section-title"><p class="eyebrow">Application timeline</p><h2>Simple review flow.</h2></div><div class="timeline-grid"><article class="timeline-card"><span>1</span><strong>Form opens</strong><p>Students submit one response through the official Google Form.</p></article><article class="timeline-card"><span>2</span><strong>Responses reviewed</strong><p>The team checks eligibility, need, and submitted details.</p></article><article class="timeline-card"><span>3</span><strong>Shortlist contacted</strong><p>Selected students may receive follow-up questions by email.</p></article><article class="timeline-card"><span>4</span><strong>Updates shared</strong><p>Final updates are sent through the contact details provided.</p></article></div></section>
+      <section class="faq-panel"><p class="eyebrow">FAQ</p><h2>Quick answers.</h2><div class="faq-list"><details><summary>Do students need to create an account?</summary><p>No. Account creation has been removed. Applications happen through the official Google Form.</p></details><details><summary>Can I submit more than once?</summary><p>The form is set up for one response per email, so students should review everything before submitting.</p></details><details><summary>Where do I check application status?</summary><p>Status updates will come through the email or contact details submitted in the form.</p></details><details><summary>What if I made a mistake?</summary><p>Contact the team with the same email you used in the application and explain the correction clearly.</p></details></div></section>
     </main>
-
-    <div class="launch-modal" id="form-modal" role="dialog" aria-modal="true" aria-labelledby="form-modal-title">
-      <div class="modal-card">
-        <p class="eyebrow">Official Form</p>
-        <h2 id="form-modal-title">Open the Google application form?</h2>
-        <p>You are about to leave the website and open the official Success Scholarships Google Form. Use the email you want the review team to contact, and submit only once.</p>
-        <div class="modal-actions">
-          <a class="button primary" href="https://forms.gle/LWNga2iSiBCWmFnD7" target="_blank" rel="noopener">Open Form</a>
-          <button class="button secondary" type="button" data-close-form>Stay Here</button>
-        </div>
-      </div>
-    </div>
-
-    <footer><p>Success Club 2026 Scholarship Portal</p><a href="contact.html">Contact Us</a></footer>
+    <div class="launch-modal" id="form-modal" aria-hidden="true"><div class="modal-card"><p class="eyebrow">Leaving the website</p><h2>Open the official Google Form?</h2><p>The form opens in a new tab. Submit only when your details are accurate because it is one form per email.</p><div class="modal-actions"><a class="button" href="https://forms.gle/LWNga2iSiBCWmFnD7" target="_blank" rel="noopener">Open Form</a><button class="button secondary" type="button" data-close-form>Stay Here</button></div></div></div>
+    <footer><p>Success Club 2026</p><a href="contact.html">Contact Us</a></footer>
     <script src="assets/js/script.js"></script>
     <script>
-      const checker = document.querySelector('#eligibility-checker');
-      const result = document.querySelector('#checker-result');
-      const modal = document.querySelector('#form-modal');
-      const openButtons = document.querySelectorAll('[data-open-form]');
-      const closeButton = document.querySelector('[data-close-form]');
-
-      checker?.addEventListener('submit', (event) => {
-        event.preventDefault();
-        const data = new FormData(checker);
-        const need = data.get('need');
-        const income = data.get('income');
-        let match = 'Quality Education Scholarship';
-        if (need === 'digital') match = 'Digital Study Support';
-        if (need === 'fees') match = 'Foundation Learning Grant';
-        if (income === 'high') {
-          result.textContent = 'You can still apply, but priority may go to students with stronger financial need. Best fit: ' + match + '.';
-          return;
-        }
-        result.textContent = 'Best fit: ' + match + '. Prepare your details, then open the official application form.';
-      });
-
-      openButtons.forEach((button) => button.addEventListener('click', () => modal.classList.add('show')));
-      closeButton?.addEventListener('click', () => modal.classList.remove('show'));
-      modal?.addEventListener('click', (event) => { if (event.target === modal) modal.classList.remove('show'); });
-      document.addEventListener('keydown', (event) => { if (event.key === 'Escape') modal?.classList.remove('show'); });
+      const checker = document.querySelector("#eligibility-checker");
+      const result = document.querySelector("#checker-result");
+      if (checker && result) {
+        checker.addEventListener("submit", (event) => {
+          event.preventDefault();
+          const data = new FormData(checker);
+          const answers = [data.get("school"), data.get("need"), data.get("contact")];
+          if (answers.includes("")) { result.textContent = "Please answer all three questions first."; return; }
+          result.textContent = answers.every((answer) => answer === "yes") ? "You look ready to apply. Open the form when your details are prepared." : "You may still contact the team, but review the requirements carefully before applying.";
+        });
+      }
+      const modal = document.querySelector("#form-modal");
+      document.querySelectorAll("[data-open-form]").forEach((button) => button.addEventListener("click", () => modal.classList.add("show")));
+      document.querySelectorAll("[data-close-form]").forEach((button) => button.addEventListener("click", () => modal.classList.remove("show")));
+      if (modal) modal.addEventListener("click", (event) => { if (event.target === modal) modal.classList.remove("show"); });
     </script>
   </body>
 </html>
