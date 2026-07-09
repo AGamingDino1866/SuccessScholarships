@@ -35,6 +35,7 @@ const setupNavigation = () => {
   injectMobileNavFix();
   upsertNavLink({ href: "resources.html", label: "Resources", beforeHref: "contact.html" });
   upsertNavLink({ href: "status.html", label: "Status", beforeHref: "contact.html" });
+  upsertNavLink({ href: "auth.html", label: "Sign In", beforeHref: "contact.html" });
 
   const navToggle = document.querySelector(".nav-toggle");
   const navLinks = document.querySelector(".nav-links");
