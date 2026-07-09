@@ -7,39 +7,53 @@
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="assets/css/styles.css" />
     <style>
-      :root{--ink:#173d31;--muted:#607066;--paper:#f7f8f4;--card:#fff;--rose:#d56b91;--gold:#f1b84b;--line:rgba(23,61,49,.14);--shadow:0 24px 70px rgba(23,33,28,.14)}body{background:var(--paper);color:var(--ink)}.centered-header{position:sticky;top:0;z-index:40;background:rgba(247,248,244,.9);border-bottom:1px solid rgba(23,61,49,.08);backdrop-filter:blur(18px)}.centered-nav{position:relative;min-height:82px;justify-content:center}.centered-nav .logo-only{position:absolute;left:50px;top:50%;transform:translateY(-50%)}.logo-only span+span{display:none}.centered-nav .nav-links{padding:8px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.9);box-shadow:0 16px 40px rgba(23,33,28,.1)}.nav-links a{border-radius:999px}.nav-links a.active,.nav-links a:hover{background:#173d31;color:white}.status-shell{width:min(980px,calc(100% - 32px));margin:36px auto 84px;display:grid;gap:20px}.status-hero,.lookup-card,.result-card{border:1px solid var(--line);border-radius:18px;background:var(--card);box-shadow:var(--shadow)}.status-hero{min-height:360px;padding:clamp(28px,5vw,58px);background:linear-gradient(135deg,rgba(23,61,49,.95),rgba(23,61,49,.68)),url("assets/education-hero.png") center/cover;color:#fff;display:grid;align-content:end}.eyebrow{font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--rose);font-size:.78rem}.status-hero .eyebrow{color:#ffdbe8}.status-hero h1{font-size:clamp(2.4rem,6vw,5.2rem);line-height:.98;margin:10px 0 18px}.status-hero p{max-width:720px;color:rgba(255,255,255,.86);line-height:1.7}.lookup-card,.result-card{padding:28px}.lookup-form{display:grid;gap:14px}.lookup-form label{display:grid;gap:8px;font-weight:900;color:var(--ink)}.lookup-form input{width:100%;padding:15px 16px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);font:inherit}.lookup-form small{color:var(--muted);line-height:1.5}.button{border-radius:999px}.result-card{display:none}.result-card.show{display:block}.result-card h2{font-size:clamp(1.9rem,4vw,3rem);line-height:1;margin:0 0 12px}.result-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px}.result-grid div{padding:14px;border-radius:12px;background:#eef3eb}.result-grid span{display:block;color:var(--muted);font-size:.78rem;font-weight:900;text-transform:uppercase}.result-grid strong{display:block;margin-top:5px;overflow-wrap:anywhere}.result-message{margin-top:16px;color:var(--muted);line-height:1.7}.error{color:#8d315b;font-weight:900}@media(max-width:920px){.centered-nav{justify-content:space-between}.centered-nav .logo-only{position:static;transform:none}.result-grid{grid-template-columns:1fr}}@media(max-width:640px){.status-shell{width:min(100% - 24px,980px);margin-top:16px}.status-hero,.lookup-card,.result-card{border-radius:12px}.lookup-card,.result-card{padding:20px}.status-hero{min-height:320px;padding:24px}.status-hero h1{font-size:clamp(2rem,10vw,3.4rem)}}
+      :root{--ink:#173d31;--muted:#607066;--paper:#f7f8f4;--card:#fff;--rose:#d56b91;--gold:#f1b84b;--line:rgba(23,61,49,.14);--shadow:0 24px 70px rgba(23,33,28,.14)}body{background:var(--paper);color:var(--ink)}.centered-header{position:sticky;top:0;z-index:40;background:rgba(247,248,244,.9);border-bottom:1px solid rgba(23,61,49,.08);backdrop-filter:blur(18px)}.centered-nav{position:relative;min-height:82px;justify-content:center}.centered-nav .logo-only{position:absolute;left:50px;top:50%;transform:translateY(-50%)}.logo-only span+span{display:none}.centered-nav .nav-links{padding:8px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.9);box-shadow:0 16px 40px rgba(23,33,28,.1)}.nav-links a{border-radius:999px}.nav-links a.active,.nav-links a:hover{background:#173d31;color:white}.status-shell{width:min(980px,calc(100% - 32px));margin:36px auto 84px;display:grid;gap:20px}.status-hero,.lookup-card,.result-card{border:1px solid var(--line);border-radius:18px;background:var(--card);box-shadow:var(--shadow)}.status-hero{min-height:360px;padding:clamp(28px,5vw,58px);background:linear-gradient(135deg,rgba(23,61,49,.95),rgba(23,61,49,.68)),url("assets/education-hero.png") center/cover;color:#fff;display:grid;align-content:end}.eyebrow{font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--rose);font-size:.78rem}.status-hero .eyebrow{color:#ffdbe8}.status-hero h1{font-size:clamp(2.4rem,6vw,5.2rem);line-height:.98;margin:10px 0 18px}.status-hero p{max-width:720px;color:rgba(255,255,255,.86);line-height:1.7}.lookup-card,.result-card{padding:28px}.lookup-form{display:grid;gap:14px}.lookup-form label{display:grid;gap:8px;font-weight:900;color:var(--ink)}.lookup-form input{width:100%;padding:15px 16px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);font:inherit;text-transform:uppercase}.lookup-form small{color:var(--muted);line-height:1.5}.button{border-radius:999px}.result-card{display:none}.result-card.show{display:block}.result-card h2{font-size:clamp(1.9rem,4vw,3rem);line-height:1;margin:0 0 12px}.result-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px}.result-grid div{padding:14px;border-radius:12px;background:#eef3eb}.result-grid span{display:block;color:var(--muted);font-size:.78rem;font-weight:900;text-transform:uppercase}.result-grid strong{display:block;margin-top:5px;overflow-wrap:anywhere}.result-message{margin-top:16px;color:var(--muted);line-height:1.7}.error{color:#8d315b;font-weight:900}@media(max-width:920px){.centered-nav{justify-content:space-between}.centered-nav .logo-only{position:static;transform:none}.result-grid{grid-template-columns:1fr}}@media(max-width:640px){.status-shell{width:min(100% - 24px,980px);margin-top:16px}.status-hero,.lookup-card,.result-card{border-radius:12px}.lookup-card,.result-card{padding:20px}.status-hero{min-height:320px;padding:24px}.status-hero h1{font-size:clamp(2rem,10vw,3.4rem)}}
     </style>
   </head>
   <body>
     <header class="site-header centered-header"><nav class="nav-shell centered-nav" aria-label="Main navigation"><a class="brand compact-brand logo-only" href="index.html" aria-label="Success Club home"><span class="brand-mark">SC</span></a><button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links"><span></span><span></span><span></span></button><div class="nav-links" id="nav-links"><a href="index.html">Home</a><a href="apply.html">My Applications</a><a href="resources.html">Resources</a><a class="active" href="status.html">Status</a><a href="contact.html">Contact Us</a></div></nav></header>
     <main class="status-shell">
-      <section class="status-hero"><p class="eyebrow">Backend status lookup</p><h1>Check your application status.</h1><p>Enter the same email used in the application form or an application ID shared by the review team.</p></section>
-      <section class="lookup-card"><form class="lookup-form" id="status-form"><label>Email address<input type="email" name="email" placeholder="student@example.com" /></label><label>Application ID<input type="text" name="applicationId" placeholder="SC2026-DEMO" /></label><small>You only need one field. The demo ID works after the Cloudflare D1 database is connected and seeded.</small><button class="button" type="submit">Check Status</button></form></section>
+      <section class="status-hero"><p class="eyebrow">Application status lookup</p><h1>Check your application status.</h1><p>Enter the application ID shared by the review team to see the latest status from Firebase.</p></section>
+      <section class="lookup-card"><form class="lookup-form" id="status-form"><label>Application ID<input type="text" name="applicationId" placeholder="SC2026-DEMO" autocomplete="off" required /></label><small>The demo ID is <strong>SC2026-DEMO</strong>. Real applicants should use the ID sent by the scholarship team.</small><button class="button" type="submit">Check Status</button></form></section>
       <section class="result-card" id="status-result" aria-live="polite"></section>
     </main>
-    <footer><p>Success Club 2026</p><a href="apply.html">My Applications</a></footer><script src="assets/js/script.js?v=backend-status-1"></script><script>
+    <footer><p>Success Club 2026</p><a href="apply.html">My Applications</a></footer><script src="assets/js/script.js?v=firebase-status-1"></script><script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+      import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyAw65XzclDbj2AUyHKlPKP0dufaoqpd8OY",
+        authDomain: "successscholarships-2026.firebaseapp.com",
+        projectId: "successscholarships-2026",
+        storageBucket: "successscholarships-2026.firebasestorage.app",
+        messagingSenderId: "548307406445",
+        appId: "1:548307406445:web:821b1aa139ecdb0ac2f964",
+        measurementId: "G-7X02YSZCZ0"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
       const form = document.querySelector('#status-form');
       const result = document.querySelector('#status-result');
       const show = (html) => { result.innerHTML = html; result.classList.add('show'); };
+      const escapeHtml = (value) => String(value || '').replace(/[&<>'"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char]));
+
       form.addEventListener('submit', async (event) => {
         event.preventDefault();
         const data = new FormData(form);
-        const params = new URLSearchParams();
-        const email = data.get('email').trim();
-        const applicationId = data.get('applicationId').trim();
-        if (email) params.set('email', email);
-        if (applicationId) params.set('applicationId', applicationId);
-        if (!email && !applicationId) { show('<p class="error">Enter an email or application ID first.</p>'); return; }
+        const applicationId = String(data.get('applicationId') || '').trim().toUpperCase();
+        if (!applicationId) { show('<p class="error">Enter an application ID first.</p>'); return; }
         show('<p>Checking status...</p>');
         try {
-          const response = await fetch(`/api/status?${params.toString()}`);
-          const payload = await response.json();
-          if (!payload.ok) { show(`<p class="error">${payload.error || 'Something went wrong.'}</p>`); return; }
-          if (!payload.found) { show(`<h2>${payload.status}</h2><p class="result-message">${payload.message}</p>`); return; }
-          const app = payload.application;
-          show(`<h2>${app.status}</h2><div class="result-grid"><div><span>Application ID</span><strong>${app.application_id}</strong></div><div><span>Student</span><strong>${app.student_name}</strong></div><div><span>City</span><strong>${app.city || 'Not listed'}</strong></div><div><span>Updated</span><strong>${app.updated_at}</strong></div></div><p class="result-message">${app.message || ''}</p>`);
+          const snapshot = await getDoc(doc(db, 'application_status', applicationId));
+          if (!snapshot.exists()) {
+            show('<h2>Not found</h2><p class="result-message">No application status was found for that ID yet. Check the spelling or try again later.</p>');
+            return;
+          }
+          const record = snapshot.data();
+          show(`<h2>${escapeHtml(record.status || 'Received')}</h2><div class="result-grid"><div><span>Application ID</span><strong>${escapeHtml(record.application_id || applicationId)}</strong></div><div><span>Student</span><strong>${escapeHtml(record.student_name || 'Applicant')}</strong></div><div><span>City</span><strong>${escapeHtml(record.city || 'Not listed')}</strong></div><div><span>Updated</span><strong>${escapeHtml(record.updated_at || 'Not listed')}</strong></div></div><p class="result-message">${escapeHtml(record.message || '')}</p>`);
         } catch (error) {
-          show('<p class="error">The backend is not reachable yet. Make sure Cloudflare Pages Functions are deployed and D1 is connected.</p>');
+          show('<p class="error">Firebase could not be reached yet. Check that Firestore rules are published and the application ID exists.</p>');
         }
       });
     </script>
