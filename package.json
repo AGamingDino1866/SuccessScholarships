@@ -1,9 +1,0 @@
-{
-  "name": "success-club-scholarship-portal",
-  "version": "1.0.0",
-  "description": "School project scholarship portal with local backend storage.",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js"
-  }
-}
