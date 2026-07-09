@@ -7,49 +7,12 @@
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="assets/css/styles.css" />
     <style>
-      .admin-sheet-card{padding:32px;border:1px solid var(--line);border-radius:8px;background:#fff;box-shadow:var(--soft-shadow)}
-      .admin-sheet-card h2{font-size:clamp(2rem,4vw,3.6rem);line-height:1;margin:0 0 16px}.admin-sheet-card p{color:var(--muted);line-height:1.7}.admin-sheet-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}.admin-sheet-actions .button{flex:1 1 220px}.admin-note{margin-top:22px;padding:18px;border-radius:8px;background:#f4f6f0;color:#4d5c53}
+      body{background:#f7f8f4;color:#173d31}.admin-page{width:min(1180px,calc(100% - 32px));margin:32px auto 86px}.admin-layout{display:grid;grid-template-columns:360px 1fr;gap:20px;align-items:start}.auth-card,.admin-panel{padding:28px;border:1px solid rgba(23,61,49,.14);border-radius:18px;background:#fff;box-shadow:0 24px 70px rgba(23,33,28,.14)}.auth-card{display:grid;gap:14px}.auth-card h1,.admin-panel h1{font-size:clamp(2rem,4vw,3.5rem);line-height:1;margin:0 0 8px}.auth-card p,.admin-help,.empty-state{color:#607066;line-height:1.7}.auth-card label{display:grid;gap:8px;font-weight:900}.auth-card input{width:100%;padding:14px 16px;border:1px solid rgba(23,61,49,.14);border-radius:12px;font:inherit}.success-message{min-height:24px;color:#8d315b;font-weight:900}.success-message.success{color:#173d31}.admin-actions{display:flex;gap:12px;flex-wrap:wrap;margin:16px 0 22px}.applications-list{display:grid;gap:12px}.application-row{border:1px solid rgba(23,61,49,.14);border-radius:14px;padding:18px;background:#fff;display:grid;gap:12px}.application-row header{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}.application-row h2{margin:0;font-size:1.2rem}.pill{display:inline-flex;align-items:center;border-radius:999px;background:#eef3eb;color:#173d31;font-weight:900;padding:7px 10px}.application-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.application-grid div{padding:12px;border-radius:10px;background:#f7f8f4;color:#607066;line-height:1.5}.application-grid strong{display:block;color:#173d31}.status-editor{display:grid;grid-template-columns:1fr 1.4fr auto;gap:10px}.status-editor select,.status-editor input{padding:12px;border:1px solid rgba(23,61,49,.14);border-radius:10px;font:inherit}.hidden{display:none!important}@media(max-width:900px){.admin-layout{grid-template-columns:1fr}.application-grid,.status-editor{grid-template-columns:1fr}}@media(max-width:640px){.admin-page{width:min(100% - 24px,1180px);margin-top:18px}.auth-card,.admin-panel{border-radius:12px;padding:20px}}
     </style>
   </head>
   <body>
-    <header class="site-header">
-      <nav class="nav-shell" aria-label="Admin navigation">
-        <a class="brand" href="index.html">
-          <span class="brand-mark">SC</span>
-          <span><strong>Admin Dashboard</strong><small>Success Club 2026</small></span>
-        </a>
-        <div class="nav-links admin-nav"><a href="index.html">Student Site</a></div>
-      </nav>
-    </header>
-
-    <main class="admin-page">
-      <section class="section">
-        <div class="admin-layout">
-          <form class="auth-card" id="admin-login-form">
-            <p class="eyebrow">Admin Access</p>
-            <h1>Open application responses</h1>
-            <p class="admin-help">This page is hidden from public navigation. Sign in to open the linked response sheet.</p>
-            <label>Admin email<input name="email" type="email" placeholder="Admin email" required /></label>
-            <label>Password<input name="password" type="password" placeholder="Password" required /></label>
-            <button class="button primary full" type="submit">Open Dashboard</button>
-            <div class="success-message" id="admin-login-message" role="status" aria-live="polite"></div>
-          </form>
-
-          <section class="admin-sheet-card" id="admin-dashboard" hidden>
-            <p class="eyebrow">Applications</p>
-            <h2>Google Sheet responses</h2>
-            <p>All student applications from the official Google Form are collected in this linked spreadsheet.</p>
-            <div class="admin-sheet-actions">
-              <a class="button primary" href="https://docs.google.com/spreadsheets/d/1gqATBqOnFD4Z8mIuWubuKleWsQqpohmdXu4YwCaFo_4/edit?resourcekey=&gid=348710097#gid=348710097" target="_blank" rel="noopener">Open Applications Sheet</a>
-              <a class="button secondary" href="https://forms.gle/LWNga2iSiBCWmFnD7" target="_blank" rel="noopener">Open Application Form</a>
-              <button class="button secondary" id="admin-logout-button" type="button">Sign Out</button>
-            </div>
-            <p class="admin-note">Add a <strong>Status</strong> column in the sheet for Pending, Approved, Rejected, or Needs Info. Add a <strong>Notes</strong> column if you want review comments.</p>
-          </section>
-        </div>
-      </section>
-    </main>
-
-    <script src="assets/js/admin.js"></script>
+    <header class="site-header"><nav class="nav-shell" aria-label="Admin navigation"><a class="brand" href="index.html"><span class="brand-mark">SC</span><span><strong>Admin Dashboard</strong><small>Success Club 2026</small></span></a><div class="nav-links admin-nav"><a href="index.html">Student Site</a></div></nav></header>
+    <main class="admin-page"><section class="admin-layout"><form class="auth-card" id="admin-login-form"><p class="eyebrow">Admin Access</p><h1>Review applications</h1><p class="admin-help">This page is hidden from public navigation. Sign in with the Firebase admin account to review submissions.</p><label>Admin email<input name="email" type="email" autocomplete="email" required /></label><label>Password<input name="password" type="password" autocomplete="current-password" required /></label><button class="button primary full" type="submit">Open Dashboard</button><div class="success-message" id="admin-login-message" role="status" aria-live="polite"></div></form><section class="admin-panel hidden" id="admin-dashboard"><p class="eyebrow">Applications</p><h1>Submitted applications</h1><p class="admin-help">Update status here. The public Status page reads the matching status record by application ID.</p><div class="admin-actions"><button class="button secondary" id="refresh-button" type="button">Refresh</button><button class="button secondary" id="admin-logout-button" type="button">Sign Out</button></div><div class="applications-list" id="applications-list"><p class="empty-state">Loading applications...</p></div></section></section></main>
+    <script type="module" src="assets/js/admin.js?v=firebase-admin-1"></script>
   </body>
 </html>
