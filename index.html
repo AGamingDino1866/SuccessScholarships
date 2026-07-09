@@ -7,65 +7,64 @@
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="assets/css/styles.css" />
     <style>
-      body.home-redesign { background: #f4f6f0; }
-      .centered-header { position: sticky; top: 0; background: transparent; border-bottom: 0; pointer-events: none; }
-      .centered-nav { min-height: 84px; justify-content: center; pointer-events: auto; }
-      .centered-nav .logo-only { position: absolute; left: 50px; }
-      .logo-only span + span { display: none; }
-      .centered-nav .nav-links { padding: 8px; border: 1px solid rgba(23,61,49,.13); border-radius: 8px; background: rgba(255,255,255,.86); box-shadow: 0 18px 42px rgba(23,33,28,.12); backdrop-filter: blur(18px); }
-      .scroll-hero { min-height: 145vh; position: relative; display: grid; place-items: start center; padding-top: 28px; }
-      .scroll-hero-image { position: sticky; top: 92px; width: min(1120px, calc(100% - 32px)); height: min(72vh, 680px); border-radius: 8px; background: linear-gradient(180deg, rgba(7,18,13,.1), rgba(7,18,13,.72)), url("assets/education-hero.png") center/cover; box-shadow: 0 34px 90px rgba(23,33,28,.26); opacity: var(--hero-opacity,1); transform: translateY(calc(var(--hero-progress,0) * -22px)) scale(calc(1 - var(--hero-progress,0) * .045)); }
-      .scroll-hero-overlay { position: sticky; top: 32vh; z-index: 2; width: min(980px, calc(100% - 36px)); margin-top: -58vh; text-align: center; color: #fff; opacity: var(--hero-opacity,1); transform: translateY(calc(var(--hero-progress,0) * -34px)); }
-      .scroll-hero-overlay .eyebrow { color: #ffe3ef; }
-      .scroll-hero-overlay h1 { max-width: 980px; margin: 0 auto; font-size: clamp(2.6rem, 8vw, 7.4rem); line-height: .94; text-wrap: balance; }
-      .scroll-hero-actions { margin-top: 32px; display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; }
-      .scroll-intro { width: min(980px, calc(100% - 32px)); margin: -18vh auto 38px; padding: 72px 0 24px; position: relative; z-index: 4; text-align: center; }
-      .scroll-intro h2, .home-cta h2 { font-size: clamp(2rem, 5vw, 4.5rem); line-height: 1; margin-bottom: 0; text-wrap: balance; }
-      .topic-river { width: min(980px, calc(100% - 32px)); margin: 0 auto; display: grid; gap: 18px; }
-      .topic-river article { min-height: 190px; display: grid; grid-template-columns: 80px .52fr 1fr; gap: 20px; align-items: center; padding: 28px; border-top: 1px solid rgba(23,61,49,.14); }
-      .topic-river span { color: var(--rose-dark); font-weight: 900; font-size: .88rem; }
-      .topic-river h3 { margin: 0; font-size: clamp(1.8rem, 4vw, 3.4rem); line-height: 1; }
-      .topic-river p { margin: 0; color: #4d5c53; font-size: 1.05rem; line-height: 1.7; }
-      .home-cta { width: min(980px, calc(100% - 32px)); margin: 80px auto; padding: 56px 0 74px; text-align: center; border-top: 1px solid rgba(23,61,49,.14); border-bottom: 1px solid rgba(23,61,49,.14); }
-      .home-cta .hero-actions { justify-content: center; }
-      @media (max-width: 920px) { .centered-nav{justify-content:space-between}.centered-nav .logo-only{position:static}.topic-river article{grid-template-columns:1fr;min-height:auto;align-items:start}.scroll-hero-image{top:82px;height:66vh} }
-      @media (max-width: 640px) { .scroll-hero{min-height:128vh}.scroll-hero-image{width:calc(100% - 24px);height:62vh}.scroll-hero-overlay{top:28vh}.scroll-hero-actions .button,.home-cta .button{width:100%}.topic-river article{padding:24px 0} }
+      :root{--ink:#173d31;--muted:#607066;--paper:#f7f8f4;--card:#ffffff;--rose:#d56b91;--gold:#f1b84b;--sky:#79b7c8;--line:rgba(23,61,49,.14);--shadow:0 24px 70px rgba(23,33,28,.14)}body{background:var(--paper);color:var(--ink)}.centered-header{position:sticky;top:0;z-index:40;background:rgba(247,248,244,.78);border-bottom:1px solid rgba(23,61,49,.08);backdrop-filter:blur(18px)}.centered-nav{min-height:82px;justify-content:center}.centered-nav .logo-only{position:absolute;left:50px}.logo-only span+span{display:none}.centered-nav .nav-links{padding:8px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.82);box-shadow:0 16px 40px rgba(23,33,28,.1)}.nav-links a{border-radius:999px}.nav-links a.active,.nav-links a:hover{background:#173d31;color:white}.hero-wrap{width:min(1180px,calc(100% - 32px));margin:34px auto 0;display:grid;grid-template-columns:1.1fr .9fr;gap:20px;align-items:stretch;min-height:calc(100vh - 130px)}.hero-card{border-radius:18px;padding:clamp(28px,5vw,64px);background:linear-gradient(135deg,rgba(23,61,49,.95),rgba(23,61,49,.72)),url("assets/education-hero.png") center/cover;color:#fff;box-shadow:var(--shadow);display:grid;align-content:end;overflow:hidden}.eyebrow{font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--rose);font-size:.78rem}.hero-card .eyebrow{color:#ffdbe8}.hero-card h1{font-size:clamp(2.7rem,7vw,6.9rem);line-height:.94;margin:10px 0 18px;text-wrap:balance}.hero-card p{font-size:clamp(1rem,2vw,1.3rem);line-height:1.7;max-width:760px;color:rgba(255,255,255,.86)}.hero-side{display:grid;gap:20px}.surface-card,.feature-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:26px;box-shadow:var(--shadow)}.surface-card h2{font-size:clamp(2rem,4vw,3.8rem);line-height:1;margin:8px 0}.surface-card p,.feature-card p{color:var(--muted);line-height:1.7}.stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.stat{border:1px solid var(--line);border-radius:12px;padding:18px;background:#fff}.stat strong{font-size:1.9rem;display:block}.soft-band{margin:80px 0 0;padding:78px 0;background:#eef3eb}.section-inner{width:min(1120px,calc(100% - 32px));margin:0 auto}.section-title{max-width:760px;margin-bottom:28px}.section-title h2{font-size:clamp(2.2rem,5vw,4.8rem);line-height:.98;margin:8px 0}.section-title p{color:var(--muted);line-height:1.7}.feature-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.feature-card{box-shadow:none;min-height:210px}.feature-card:nth-child(2){border-top:5px solid var(--gold)}.feature-card:nth-child(3){border-top:5px solid var(--sky)}.feature-card:nth-child(4){border-top:5px solid var(--rose)}.feature-card h3{font-size:1.35rem;margin:0 0 10px}.flow{width:min(1120px,calc(100% - 32px));margin:76px auto;display:grid;grid-template-columns:.8fr 1.2fr;gap:24px;align-items:start}.steps{display:grid;gap:12px}.step{display:grid;grid-template-columns:48px 1fr;gap:14px;align-items:start;padding:18px;border:1px solid var(--line);border-radius:14px;background:#fff}.step span{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:var(--rose);color:#fff;font-weight:900}.step p{margin:4px 0 0;color:var(--muted);line-height:1.6}.cta-panel{width:min(1120px,calc(100% - 32px));margin:0 auto 80px;padding:34px;border-radius:18px;background:#173d31;color:white;display:flex;justify-content:space-between;gap:20px;align-items:center}.cta-panel p{color:rgba(255,255,255,.78);max-width:620px}.button{border-radius:999px}@media(max-width:920px){.centered-nav{justify-content:space-between}.centered-nav .logo-only{position:static}.hero-wrap,.flow{grid-template-columns:1fr}.feature-grid{grid-template-columns:1fr 1fr}.cta-panel{display:grid}}@media(max-width:640px){.centered-nav .nav-links{border-radius:14px}.hero-wrap{min-height:auto}.hero-card,.surface-card,.feature-card,.cta-panel{border-radius:12px}.feature-grid,.stat-grid{grid-template-columns:1fr}.soft-band{padding:52px 0}.centered-nav{min-height:74px}}
     </style>
   </head>
-  <body class="home-redesign">
+  <body>
     <header class="site-header centered-header">
       <nav class="nav-shell centered-nav" aria-label="Main navigation">
         <a class="brand compact-brand logo-only" href="index.html" aria-label="Success Club home"><span class="brand-mark">SC</span></a>
         <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links"><span></span><span></span><span></span></button>
-        <div class="nav-links" id="nav-links">
-          <a class="active" href="index.html">Home</a>
-          <a href="apply.html">My Applications</a>
-          <a href="contact.html">Contact Us</a>
-        </div>
+        <div class="nav-links" id="nav-links"><a class="active" href="index.html">Home</a><a href="apply.html">My Applications</a><a href="contact.html">Contact Us</a></div>
       </nav>
     </header>
     <main>
-      <section class="scroll-hero" id="home"><div class="scroll-hero-image" aria-hidden="true"></div><div class="scroll-hero-overlay"><p class="eyebrow">Success Club 2026</p><h1>Helping underprivileged students continue their education.</h1><div class="scroll-hero-actions"><a class="button primary" href="apply.html">Start Application</a><a class="button secondary" href="contact.html">Contact Us</a></div></div></section>
-      <section class="scroll-intro"><p class="eyebrow">Why It Matters</p><h2>A clearer path from student need to scholarship support.</h2></section>
-      <section class="topic-river" aria-label="Scholarship topics">
-        <article><span>01</span><h3>Access</h3><p>Education should stay within reach when family income becomes uncertain. A simple online portal helps students ask for support without confusion.</p></article>
-        <article><span>02</span><h3>Dignity</h3><p>Students deserve a respectful process. Clear forms and private review let applicants share their needs without feeling exposed or judged.</p></article>
-        <article><span>03</span><h3>Opportunity</h3><p>Small financial support can protect a student from leaving school. One scholarship can keep books, transport, fees, and focus together.</p></article>
-        <article><span>04</span><h3>Trust</h3><p>Google sign-in on the application form helps keep submissions tied to one email, giving admins cleaner information to review.</p></article>
-        <article><span>05</span><h3>Confidence</h3><p>Students can submit once through the official form and know their response is saved for the scholarship review team.</p></article>
-        <article><span>06</span><h3>Fair Review</h3><p>A shared application format helps every student answer the same core questions. That makes reviewing needs and goals more consistent.</p></article>
-        <article><span>07</span><h3>Community</h3><p>Success Club connects students, admins, and supporters around one purpose: helping capable learners continue school when money becomes a barrier.</p></article>
-        <article><span>08</span><h3>Focus</h3><p>Students should spend more time learning and less time chasing paperwork. The form gathers key details in one organized place.</p></article>
-        <article><span>09</span><h3>Growth</h3><p>Quality education creates long-term change. Supporting one student can influence families, classrooms, neighborhoods, and future choices.</p></article>
-        <article><span>10</span><h3>SDG 4</h3><p>This project supports Quality Education by showing how technology can make scholarship access clearer, faster, and easier to understand.</p></article>
+      <section class="hero-wrap">
+        <div class="hero-card">
+          <p class="eyebrow">Success Club 2026</p>
+          <h1>Helping underprivileged students continue their education.</h1>
+          <p>A clear scholarship portal for students and families to understand the program, check readiness, and open the official application form without account creation.</p>
+        </div>
+        <aside class="hero-side">
+          <div class="surface-card">
+            <p class="eyebrow">Fast path</p>
+            <h2>Check. Prepare. Apply.</h2>
+            <p>The website keeps the public flow simple: read the requirements, review your documents, and submit one application through the official Google Form.</p>
+            <div class="button-row"><a class="button" href="apply.html">My Applications</a><a class="button secondary" href="contact.html">Contact Us</a></div>
+          </div>
+          <div class="stat-grid">
+            <div class="stat"><strong>1</strong><span>form per email</span></div>
+            <div class="stat"><strong>3</strong><span>city chapters</span></div>
+            <div class="stat"><strong>SDG 4</strong><span>quality education</span></div>
+            <div class="stat"><strong>2026</strong><span>launch cycle</span></div>
+          </div>
+        </aside>
       </section>
-      <section class="home-cta"><p class="eyebrow">Start Here</p><h2>Apply through the official Success Scholarships form.</h2><div class="hero-actions"><a class="button primary" href="apply.html">Open My Applications</a><a class="button secondary" href="contact.html">Contact Us</a></div></section>
+      <section class="soft-band">
+        <div class="section-inner">
+          <div class="section-title"><p class="eyebrow">What the portal covers</p><h2>Everything students need before opening the form.</h2><p>Each section is written for quick scanning, so applicants can move from information to action without dealing with logins or confusing backend steps.</p></div>
+          <div class="feature-grid">
+            <article class="feature-card"><h3>Scholarship Details</h3><p>Simple program information for students who need financial support to continue school.</p></article>
+            <article class="feature-card"><h3>Eligibility Checker</h3><p>A front-end readiness check that helps students understand whether they should apply.</p></article>
+            <article class="feature-card"><h3>Application Checklist</h3><p>A short list of documents and details students should prepare before submitting.</p></article>
+            <article class="feature-card"><h3>Timeline</h3><p>Clear application stages from form launch to review, shortlist, and final updates.</p></article>
+            <article class="feature-card"><h3>FAQ</h3><p>Answers for common questions about email limits, status updates, and contact help.</p></article>
+            <article class="feature-card"><h3>Contact Route</h3><p>A direct email option for students who need help or corrections after applying.</p></article>
+          </div>
+        </div>
+      </section>
+      <section class="flow">
+        <div class="section-title"><p class="eyebrow">How it works</p><h2>A lightweight public application flow.</h2></div>
+        <div class="steps">
+          <div class="step"><span>1</span><div><strong>Read the homepage</strong><p>Understand the mission, student audience, and scholarship purpose.</p></div></div>
+          <div class="step"><span>2</span><div><strong>Use My Applications</strong><p>Check eligibility, review the checklist, and open the official form.</p></div></div>
+          <div class="step"><span>3</span><div><strong>Submit once</strong><p>The form is limited to one response per email, so students should review before sending.</p></div></div>
+          <div class="step"><span>4</span><div><strong>Wait for updates</strong><p>The team reviews responses and contacts students through the details they submit.</p></div></div>
+        </div>
+      </section>
+      <section class="cta-panel"><div><p class="eyebrow">Ready</p><h2>Start with the application page.</h2><p>Use the checker and checklist first, then launch the form when the details are ready.</p></div><a class="button light" href="apply.html">Open My Applications</a></section>
     </main>
-    <footer><p>Success Club 2026 Scholarship Portal - SDG 4 Quality Education</p><a href="contact.html">Contact Us</a></footer>
+    <footer><p>Success Club 2026</p><a href="apply.html">My Applications</a></footer>
     <script src="assets/js/script.js"></script>
-    <script>
-      const hero=document.querySelector('.scroll-hero');
-      if(hero){const update=()=>{const r=hero.getBoundingClientRect();const d=Math.max(1,r.height-innerHeight);const p=Math.min(1,Math.max(0,-r.top/d));const f=Math.min(1,Math.max(0,(p-.12)/.48));document.documentElement.style.setProperty('--hero-progress',p.toFixed(3));document.documentElement.style.setProperty('--hero-opacity',(1-f).toFixed(3));};update();addEventListener('scroll',update,{passive:true});addEventListener('resize',update);}
-    </script>
   </body>
 </html>
