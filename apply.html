@@ -3,57 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Apply - Success Club 2026</title>
+    <title>My Applications - Success Club 2026</title>
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="assets/css/styles.css" />
+    <style>.centered-header{position:sticky;top:0;background:transparent;border-bottom:0;pointer-events:none}.centered-nav{min-height:84px;justify-content:center;pointer-events:auto}.centered-nav .logo-only{position:absolute;left:0}.centered-nav .nav-links{padding:8px;border:1px solid rgba(23,61,49,.13);border-radius:8px;background:rgba(255,255,255,.86);box-shadow:0 18px 42px rgba(23,33,28,.12);backdrop-filter:blur(18px)}.application-status-section{width:min(1180px,calc(100% - 32px));margin:0 auto 60px;padding-top:0}.application-status-section .section-heading{width:min(760px,100%);margin:0 0 24px}@media(max-width:920px){.centered-nav{justify-content:space-between}.centered-nav .logo-only{position:static}}</style>
   </head>
   <body>
-    <header class="site-header">
-      <nav class="nav-shell">
-        <a class="brand" href="index.html"><span class="brand-mark">SC</span><span><strong>Success Club</strong><small>Apply</small></span></a>
-        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links"><span></span><span></span><span></span></button>
-        <div class="nav-links" id="nav-links">
-          <a href="index.html">Home</a><a href="status.html">Application Status</a><a href="scholarships.html">Scholarships</a><a href="signup.html">Sign Up</a><a href="signin.html">Sign In</a><a class="active" href="apply.html">Apply</a><a href="admin.html">Admin</a>
-        </div>
-      </nav>
-    </header>
+    <header class="site-header centered-header"><nav class="nav-shell centered-nav" aria-label="Main navigation"><a class="brand compact-brand logo-only" href="index.html" aria-label="Success Club home"><span class="brand-mark">SC</span></a><button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links"><span></span><span></span><span></span></button><div class="nav-links" id="nav-links"><a href="index.html">Home</a><a class="active" href="apply.html">My Applications</a><a href="account.html">Sign Up/Sign In</a><a href="contact.html">Contact Us</a></div></nav></header>
     <main>
-      <section class="section">
-        <div class="application-layout">
-          <div class="application-panel">
-            <p class="eyebrow">Apply</p>
-            <h1>Account-linked application</h1>
-            <p>Your name, email, phone, and city come from your verified account, so applicants cannot type random contact info into the application.</p>
-            <div class="signed-in-box" data-student-status>Not signed in.</div>
-            <div class="account-preview">
-              <div><span>Name</span><strong data-student-name>Student</strong></div>
-              <div><span>Email</span><strong data-student-email>Sign in first</strong></div>
-              <div><span>Phone</span><strong data-student-phone>Sign in first</strong></div>
-              <div><span>City</span><strong data-student-city>Sign in first</strong></div>
-            </div>
-            <div class="timeline"><div><span></span> Sign up</div><div><span></span> Verify email</div><div><span></span> Pass CAPTCHA</div><div><span></span> Eligibility checked here</div></div>
-          </div>
-          <form class="application-form" id="application-form">
-            <div class="form-grid">
-              <label>Applying for<select name="program" id="program-select" required><option value="">Choose scholarship</option><option>Foundation Learning Grant</option><option>Quality Education Scholarship</option><option>Digital Study Support</option></select></label>
-              <label>Current school<input name="school" type="text" placeholder="School name" required /></label>
-              <label>Current grade<input name="grade" type="number" min="6" max="12" placeholder="Example: 8" required /></label>
-              <label>Household income<select name="income" required><option value="">Select range</option><option>Below PKR 60,000</option><option>PKR 60,000 - 100,000</option><option>Above PKR 100,000</option></select></label>
-              <label>Guardian name<input name="guardianName" type="text" placeholder="Parent or guardian" required /></label>
-            </div>
-            <label>Why should you receive this scholarship?<textarea name="statement" rows="5" minlength="40" maxlength="900" placeholder="Write at least 40 characters about your goals, effort, and financial need." required></textarea></label>
-            <div class="captcha-box" id="application-captcha">
-              <input name="captchaId" type="hidden" />
-              <label>CAPTCHA: What is <strong data-captcha-question>...</strong>?<input name="captchaAnswer" type="number" required /></label>
-            </div>
-            <label class="check-row"><input name="confirm" type="checkbox" required /> I confirm this application uses my own verified account information.</label>
-            <button class="button primary" type="submit">Submit Application</button>
-            <div class="success-message" id="application-result" role="status" aria-live="polite"></div>
-          </form>
-        </div>
-      </section>
+      <section class="section"><div class="application-layout"><div class="application-panel"><p class="eyebrow">Apply</p><h1>Account-linked application</h1><p>Your name, email, phone, and city come from your verified account, so applicants cannot type random contact info into the application.</p><div class="signed-in-box" data-student-status>Not signed in.</div><div class="account-preview"><div><span>Name</span><strong data-student-name>Student</strong></div><div><span>Email</span><strong data-student-email>Sign in first</strong></div><div><span>Phone</span><strong data-student-phone>Sign in first</strong></div><div><span>City</span><strong data-student-city>Sign in first</strong></div></div><div class="timeline"><div><span></span> Sign up</div><div><span></span> Verify email</div><div><span></span> Pass CAPTCHA</div><div><span></span> Eligibility checked here</div></div></div><form class="application-form" id="application-form"><div class="form-grid"><label>Applying for<select name="program" id="program-select" required><option value="">Choose scholarship</option><option>Foundation Learning Grant</option><option>Quality Education Scholarship</option><option>Digital Study Support</option></select></label><label>Current school<input name="school" type="text" placeholder="School name" required /></label><label>Current grade<input name="grade" type="number" min="6" max="12" placeholder="Example: 8" required /></label><label>Household income<select name="income" required><option value="">Select range</option><option>Below PKR 60,000</option><option>PKR 60,000 - 100,000</option><option>Above PKR 100,000</option></select></label><label>Guardian name<input name="guardianName" type="text" placeholder="Parent or guardian" required /></label></div><label>Why should you receive this scholarship?<textarea name="statement" rows="5" minlength="40" maxlength="900" placeholder="Write at least 40 characters about your goals, effort, and financial need." required></textarea></label><div class="captcha-box" id="application-captcha"><input name="captchaId" type="hidden" /><label>CAPTCHA: What is <strong data-captcha-question>...</strong>?<input name="captchaAnswer" type="number" required /></label></div><label class="check-row"><input name="confirm" type="checkbox" required /> I confirm this application uses my own verified account information.</label><button class="button primary" type="submit">Submit Application</button><div class="success-message" id="application-result" role="status" aria-live="polite"></div></form></div></section>
+      <section class="section application-status-section"><div class="section-heading left"><p class="eyebrow">My Applications</p><h2>Application status</h2><p>Submitted applications appear here after you sign in. You can return to this page to see the latest review status.</p></div><div class="applications-list" id="student-status-list"><div class="empty-state">Loading your applications...</div></div></section>
     </main>
-    <footer><p>Not verified yet?</p><a href="signin.html">Verify email</a></footer>
-    <script src="assets/js/script.js"></script>
+    <footer><p>Not verified yet?</p><a href="signin.html">Verify email</a></footer><script src="assets/js/script.js"></script>
   </body>
 </html>
