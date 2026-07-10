@@ -17,17 +17,15 @@
       <section class="auth-panel"><p class="eyebrow">One click access</p><h2>No password screen.</h2><p>Google sign-in keeps the application flow simple and connects your submission to your email.</p><button class="google-button" id="google-signin" type="button"><span class="google-dot">G</span>Continue with Google</button><button class="google-button secondary" id="student-signout" type="button" hidden>Sign Out</button><p class="auth-message" id="auth-message" role="status" aria-live="polite"></p><div class="auth-note">After signing in, you will return to My Applications automatically. Use Sign Out if you need to switch Google accounts.</div></section>
     </main>
     <footer><p>Success Club 2026</p><a href="apply.html">My Applications</a></footer>
-    <script src="assets/js/script.js?v=google-auth-redirect-2"></script>
+    <script src="assets/js/script.js?v=google-auth-popup-1"></script>
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-      import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+      import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
       const firebaseConfig={apiKey:"AIzaSyAw65XzclDbj2AUyHKlPKP0dufaoqpd8OY",authDomain:"successscholarships-2026.firebaseapp.com",projectId:"successscholarships-2026",storageBucket:"successscholarships-2026.firebasestorage.app",messagingSenderId:"548307406445",appId:"1:548307406445:web:821b1aa139ecdb0ac2f964",measurementId:"G-7X02YSZCZ0"};
       const app=initializeApp(firebaseConfig);const auth=getAuth(app);const provider=new GoogleAuthProvider();provider.setCustomParameters({prompt:'select_account'});const button=document.querySelector('#google-signin');const signoutButton=document.querySelector('#student-signout');const message=document.querySelector('#auth-message');
-      const finishSignin=()=>{message.textContent='Success. Opening My Applications...';message.classList.add('success');window.setTimeout(()=>{window.location.href='apply.html';},500);};
-      getRedirectResult(auth).then((result)=>{if(result?.user)finishSignin();}).catch((error)=>{sessionStorage.removeItem('studentSignInPending');message.classList.remove('success');message.textContent=error.message.replace('Firebase: ','');});
-      button.addEventListener('click',async()=>{message.textContent='Opening Google sign-in...';try{sessionStorage.setItem('studentSignInPending','1');await signInWithRedirect(auth,provider);}catch(error){sessionStorage.removeItem('studentSignInPending');message.classList.remove('success');message.textContent=error.message.replace('Firebase: ','');}});
-      signoutButton.addEventListener('click',async()=>{sessionStorage.removeItem('studentSignInPending');await signOut(auth);message.textContent='Signed out. You can choose a different Google account now.';message.classList.remove('success');});
-      onAuthStateChanged(auth,(user)=>{button.hidden=Boolean(user);signoutButton.hidden=!user;if(!user)return;if(sessionStorage.getItem('studentSignInPending')==='1'){sessionStorage.removeItem('studentSignInPending');finishSignin();return;}message.textContent=`Signed in as ${user.email}`;message.classList.add('success');});
+      button.addEventListener('click',async()=>{message.textContent='Opening Google sign-in...';try{await signInWithPopup(auth,provider);message.textContent='Success. Opening My Applications...';message.classList.add('success');window.setTimeout(()=>{window.location.href='apply.html';},700);}catch(error){message.classList.remove('success');message.textContent=error.message.replace('Firebase: ','');}});
+      signoutButton.addEventListener('click',async()=>{await signOut(auth);message.textContent='Signed out. You can choose a different Google account now.';message.classList.remove('success');});
+      onAuthStateChanged(auth,(user)=>{button.hidden=Boolean(user);signoutButton.hidden=!user;if(user){message.textContent=`Signed in as ${user.email}`;message.classList.add('success');}});
     </script>
   </body>
 </html>
