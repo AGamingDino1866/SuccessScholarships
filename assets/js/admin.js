@@ -27,21 +27,33 @@ const adminDashboard = document.querySelector("#admin-dashboard");
 const adminLogoutButton = document.querySelector("#admin-logout-button");
 const applicationsList = document.querySelector("#applications-list");
 const refreshButton = document.querySelector("#refresh-button");
+const exportCsvButton = document.querySelector("#export-csv-button");
 const adminControls = document.querySelector("#admin-controls");
 const applicationSearch = document.querySelector("#application-search");
 const statusFilter = document.querySelector("#status-filter");
 const cityFilter = document.querySelector("#city-filter");
 const sortSelect = document.querySelector("#sort-select");
 const adminCount = document.querySelector("#admin-count");
+const statsGrid = document.querySelector("#stats-grid");
 let allApplications = [];
 
 const escapeHtml = (value) => String(value || "").replace(/[&<>'"]/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" }[char]));
 const normalize = (value) => String(value || "").toLowerCase().trim();
+const csv = (value) => `"${String(value || "").replace(/"/g, '""')}"`;
 const dateValue = (value) => {
   if (!value) return 0;
   if (typeof value.toDate === "function") return value.toDate().getTime();
   const parsed = new Date(value).getTime();
   return Number.isNaN(parsed) ? 0 : parsed;
+};
+const downloadText = (filename, text, type = "text/plain") => {
+  const blob = new Blob([text], { type });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(url);
 };
 
 const showAdminMessage = (message, isSuccess = false) => {
@@ -66,6 +78,18 @@ const updateCityFilter = (records) => {
   const cities = [...new Set(records.map((record) => record.city).filter(Boolean))].sort((a, b) => String(a).localeCompare(String(b)));
   cityFilter.innerHTML = '<option value="all">All cities</option>' + cities.map((city) => `<option value="${escapeHtml(city)}">${escapeHtml(city)}</option>`).join("");
   if (cities.includes(current)) cityFilter.value = current;
+};
+
+const renderStats = () => {
+  const statusCount = (status) => allApplications.filter((record) => (record.status || "Received") === status).length;
+  const documentCount = allApplications.reduce((sum, record) => sum + (record.documents?.length || 0), 0);
+  statsGrid.innerHTML = [
+    [allApplications.length, "total"],
+    [statusCount("Received"), "received"],
+    [statusCount("Under Review"), "under review"],
+    [statusCount("Approved"), "approved"],
+    [documentCount, "PDF documents"]
+  ].map(([count, label]) => `<div class="stat-card"><strong>${count}</strong><span>${label}</span></div>`).join("");
 };
 
 const getVisibleApplications = () => {
@@ -106,16 +130,22 @@ const getVisibleApplications = () => {
   return visible;
 };
 
+const applicationText = (record) => `Success Club 2026 Application\n\nApplication ID: ${record.application_id || ""}\nStudent: ${record.student_name || ""}\nEmail: ${record.email || ""}\nCity: ${record.city || ""}\nGrade: ${record.grade || ""}\nSchool: ${record.school || ""}\nGuardian: ${record.guardian_name || ""} / ${record.guardian_phone || ""}\nStatus: ${record.status || "Received"}\n\nNeed:\n${record.need_statement || ""}\n\nGoals:\n${record.goals || ""}\n\nDocuments:\n${(record.documents || []).map((file, index) => `${index + 1}. ${file.name} - ${file.url}`).join("\n") || "No documents uploaded."}\n`;
+
 const renderApplications = () => {
   const records = getVisibleApplications();
   adminCount.textContent = `${records.length} of ${allApplications.length} applications shown`;
+  renderStats();
 
   if (!records.length) {
     applicationsList.innerHTML = '<p class="empty-state">No applications match the current search or filters.</p>';
     return;
   }
 
-  applicationsList.innerHTML = records.map((record) => `
+  applicationsList.innerHTML = records.map((record) => {
+    const docs = record.documents || [];
+    const docHtml = docs.length ? `<div class="documents-box"><strong>Documents (${docs.length})</strong><div class="document-list">${docs.map((file, index) => `<button type="button" data-view-pdf="${escapeHtml(file.url)}">View ${index + 1}</button><a href="${escapeHtml(file.url)}" target="_blank" rel="noopener">Download ${index + 1}</a>`).join("")}</div><div class="pdf-viewer"><strong>PDF preview</strong><iframe title="PDF preview"></iframe></div></div>` : '<div class="documents-box"><strong>Documents</strong><span>No PDFs uploaded.</span></div>';
+    return `
     <article class="application-row" data-id="${escapeHtml(record.application_id)}" data-city="${escapeHtml(record.city)}" data-student="${escapeHtml(record.student_name)}">
       <header><h2>${escapeHtml(record.student_name)}</h2><span class="pill">${escapeHtml(record.status || "Received")}</span></header>
       <div class="application-grid">
@@ -128,14 +158,17 @@ const renderApplications = () => {
         <div class="wide"><strong>Need</strong>${escapeHtml(record.need_statement)}</div>
         <div class="wide"><strong>Goals</strong>${escapeHtml(record.goals)}</div>
       </div>
+      ${docHtml}
       <form class="status-editor">
         <select name="status"><option ${record.status === "Received" ? "selected" : ""}>Received</option><option ${record.status === "Under Review" ? "selected" : ""}>Under Review</option><option ${record.status === "Needs Info" ? "selected" : ""}>Needs Info</option><option ${record.status === "Approved" ? "selected" : ""}>Approved</option><option ${record.status === "Rejected" ? "selected" : ""}>Rejected</option></select>
         <input name="message" value="${escapeHtml(record.message || "Your application has been received and is waiting for review.")}" />
         <button class="button secondary" type="submit">Update Status</button>
+        <button class="button secondary" type="button" data-download-application>Download</button>
         <button class="danger-button" type="button" data-delete-application>Delete</button>
       </form>
     </article>
-  `).join("");
+  `;
+  }).join("");
 };
 
 const loadApplications = async () => {
@@ -184,19 +217,44 @@ applicationsList.addEventListener("submit", async (event) => {
 });
 
 applicationsList.addEventListener("click", async (event) => {
+  const row = event.target.closest(".application-row");
+  if (!row) return;
+  const applicationId = row.dataset.id;
+  const record = allApplications.find((item) => item.application_id === applicationId);
+
+  const viewButton = event.target.closest("[data-view-pdf]");
+  if (viewButton) {
+    const viewer = row.querySelector(".pdf-viewer");
+    const iframe = viewer.querySelector("iframe");
+    iframe.src = viewButton.dataset.viewPdf;
+    viewer.classList.add("show");
+    return;
+  }
+
+  const downloadButton = event.target.closest("[data-download-application]");
+  if (downloadButton && record) {
+    downloadText(`${applicationId || "application"}.txt`, applicationText(record));
+    return;
+  }
+
   const deleteButton = event.target.closest("[data-delete-application]");
   if (!deleteButton) return;
-  const row = deleteButton.closest(".application-row");
-  const applicationId = row.dataset.id;
   const student = row.dataset.student || "this applicant";
   if (!window.confirm(`Delete ${student}'s application (${applicationId})? This also removes their status lookup.`)) return;
   deleteButton.disabled = true;
   deleteButton.textContent = "Deleting...";
   await deleteDoc(doc(db, "applications", applicationId));
   await deleteDoc(doc(db, "application_status", applicationId));
-  allApplications = allApplications.filter((record) => record.application_id !== applicationId);
+  allApplications = allApplications.filter((item) => item.application_id !== applicationId);
   updateCityFilter(allApplications);
   renderApplications();
+});
+
+exportCsvButton.addEventListener("click", () => {
+  const rows = getVisibleApplications();
+  const header = ["Application ID", "Student", "Email", "City", "Grade", "School", "Guardian", "Guardian Phone", "Status", "Documents", "Need", "Goals"];
+  const lines = [header.map(csv).join(",")].concat(rows.map((record) => [record.application_id, record.student_name, record.email, record.city, record.grade, record.school, record.guardian_name, record.guardian_phone, record.status || "Received", record.documents?.length || 0, record.need_statement, record.goals].map(csv).join(",")));
+  downloadText("success-club-applications.csv", lines.join("\n"), "text/csv");
 });
 
 adminControls.addEventListener("input", renderApplications);
