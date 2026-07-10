@@ -1,7 +1,7 @@
 const injectMobileNavFix = () => {
   if (document.querySelector("style[data-mobile-nav-fix]")) return;
   const style = document.createElement("style");
-  style.datasetMobileNavFix = "true";
+  style.dataset.mobileNavFix = "true";
   style.textContent = `
     .hero-wrap > .hero-card h1{font-size:clamp(2rem,4.7vw,4.7rem)!important;line-height:1!important}
     @media (max-width: 920px) {
