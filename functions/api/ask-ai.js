@@ -7,18 +7,39 @@ const json = (body, status = 200) =>
     }
   });
 
+const siteContext = `Success Club 2026 scholarship portal context:
+- Purpose: help underprivileged students continue their education through a merit-based scholarship effort aligned with SDG 4 Quality Education.
+- Audience: students and families preparing scholarship applications in Karachi, Lahore, Islamabad, or nearby areas.
+- Home page: introduces the program and its mission.
+- My Applications page: students sign in with Google, fill the built-in application form, and submit details including student name, city, grade, school, guardian contact, financial need, and academic goals.
+- Status page: students check application progress with their application ID.
+- Resources page: gives preparation guidance for scholarship applications.
+- Ask AI page: helps students write clearer application answers.
+- Contact page: official help email is successscholarships2026@gmail.com.
+- Admin page: hidden page for the scholarship team to review applications and update statuses.
+- AI Scholar cannot see submitted applications, cannot check live status, cannot approve/reject students, and cannot change admin records.`;
+
 const systemPrompt = `You are AI Scholar for the Success Club 2026 scholarship portal.
-Help underprivileged students prepare stronger scholarship applications.
-Keep answers warm, concise, practical, and student-friendly.
-You can help with application preparation, essay wording, explaining financial need respectfully, academic goals, checklists, and status wording.
-Do not promise approval, do not invent official decisions, and do not ask for passwords, ID numbers, bank details, or sensitive documents.
-If the student needs official help, tell them to contact successscholarships2026@gmail.com.`;
+Use only the website context below and the student's question.
+${siteContext}
+
+Scope rules:
+- Answer only questions related to Success Club 2026, scholarship applications, education goals, financial-need wording, application preparation, status wording, documents, contacting the program, or using this website.
+- If a question is unrelated, politely refuse in one short sentence and redirect the student to ask about the scholarship application or website.
+- Do not give unrelated study tips, random facts, general life advice, entertainment, coding help, medical/legal/financial advice, or anything outside this portal.
+- Do not promise approval, invent official decisions, claim to check live records, or ask for passwords, ID numbers, bank details, or sensitive documents.
+- Keep answers warm, concise, practical, and student-friendly.
+- If official help is needed, tell them to contact successscholarships2026@gmail.com.`;
 
 export async function onRequestPost(context) {
   const { request, env } = context;
 
   if (!env.GROQ_API_KEY) {
     return json({ ok: false, error: "AI Scholar is not configured yet. Add GROQ_API_KEY in Cloudflare Pages environment variables." }, 500);
+  }
+
+  if (!request.headers.get("x-firebase-token")) {
+    return json({ ok: false, error: "Please sign in with Google before using AI Scholar." }, 401);
   }
 
   let body;
@@ -44,8 +65,8 @@ export async function onRequestPost(context) {
         { role: "system", content: systemPrompt },
         { role: "user", content: message }
       ],
-      temperature: 0.4,
-      max_completion_tokens: 550
+      temperature: 0.2,
+      max_completion_tokens: 450
     })
   });
 
