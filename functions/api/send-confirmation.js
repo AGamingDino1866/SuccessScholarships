@@ -14,7 +14,7 @@ export async function onRequestPost(context) {
   try {
     payload = await context.request.json();
   } catch {
-    return json({ ok: false, error: "Invalid confirmation email request." }, 400);
+    return json({ ok: false, error: "Invalid email request." }, 400);
   }
 
   if (!payload.email || !payload.application_id) {
@@ -42,6 +42,6 @@ export async function onRequestPost(context) {
 
     return json({ ok: true });
   } catch (error) {
-    return json({ ok: false, error: error.message || "Confirmation email could not be sent." }, 502);
+    return json({ ok: false, error: error.message || "Email could not be sent." }, 502);
   }
 }
