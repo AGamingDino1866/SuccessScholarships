@@ -23,7 +23,7 @@ const setupNavigation = () => {
     const currentPage = window.location.pathname.split("/").pop() || "index.html";
     const links = [
       ["index.html", "Home"],
-      ["apply.html", "My Applications"],
+      ["apply.html", "Apply"],
       ["ask-ai.html", "Ask AI"],
       ["status.html", "Status"],
       ["auth.html", "Sign In"],
