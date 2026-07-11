@@ -55,6 +55,24 @@ const downloadText = (filename, text, type = "text/plain") => {
   link.click();
   URL.revokeObjectURL(url);
 };
+const sendStatusEmail = async (record, status, message) => {
+  if (!record?.email) return { ok: false, error: "Applicant email missing." };
+  const response = await fetch("/api/send-confirmation", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({
+      email_type: "status_update",
+      email: record.email,
+      student_name: record.student_name,
+      application_id: record.application_id,
+      status,
+      message
+    })
+  });
+  const result = await response.json().catch(() => ({ ok: false, error: "Email service returned an unreadable response." }));
+  if (!response.ok || !result.ok) throw new Error(result.error || "Status email could not be sent.");
+  return result;
+};
 
 const showAdminMessage = (message, isSuccess = false) => {
   adminLoginMessage.classList.toggle("success", isSuccess);
@@ -109,7 +127,8 @@ const getVisibleApplications = () => {
       record.guardian_phone,
       record.need_statement,
       record.goals,
-      record.status
+      record.status,
+      record.admin_notes
     ].join(" "));
     return (!search || searchText.includes(search)) && (status === "all" || record.status === status) && (city === "all" || record.city === city);
   });
@@ -126,7 +145,7 @@ const getVisibleApplications = () => {
   return visible;
 };
 
-const applicationText = (record) => `Success Club 2026 Application\n\nApplication ID: ${record.application_id || ""}\nStudent: ${record.student_name || ""}\nEmail: ${record.email || ""}\nCity: ${record.city || ""}\nGrade: ${record.grade || ""}\nSchool: ${record.school || ""}\nGuardian: ${record.guardian_name || ""} / ${record.guardian_phone || ""}\nStatus: ${record.status || "Received"}\n\nNeed:\n${record.need_statement || ""}\n\nGoals:\n${record.goals || ""}\n`;
+const applicationText = (record) => `Success Club 2026 Application\n\nApplication ID: ${record.application_id || ""}\nStudent: ${record.student_name || ""}\nEmail: ${record.email || ""}\nCity: ${record.city || ""}\nGrade: ${record.grade || ""}\nSchool: ${record.school || ""}\nGuardian: ${record.guardian_name || ""} / ${record.guardian_phone || ""}\nStatus: ${record.status || "Received"}\n\nNeed:\n${record.need_statement || ""}\n\nGoals:\n${record.goals || ""}\n\nAdmin notes:\n${record.admin_notes || ""}\n`;
 
 const renderApplications = () => {
   const records = getVisibleApplications();
@@ -150,8 +169,10 @@ const renderApplications = () => {
         <div><strong>Guardian</strong>${escapeHtml(record.guardian_name)} / ${escapeHtml(record.guardian_phone)}</div>
         <div class="wide"><strong>Need</strong>${escapeHtml(record.need_statement)}</div>
         <div class="wide"><strong>Goals</strong>${escapeHtml(record.goals)}</div>
+        <div class="wide"><strong>Admin notes</strong>${escapeHtml(record.admin_notes || "No internal notes yet.")}</div>
       </div>
       <form class="status-editor">
+        <textarea name="admin_notes" placeholder="Internal admin notes. Not visible to students." style="grid-column:1/-1;min-height:86px;width:100%;padding:12px;border:1px solid rgba(23,61,49,.14);border-radius:10px;font:inherit;resize:vertical;">${escapeHtml(record.admin_notes || "")}</textarea>
         <select name="status"><option ${record.status === "Received" ? "selected" : ""}>Received</option><option ${record.status === "Under Review" ? "selected" : ""}>Under Review</option><option ${record.status === "Needs Info" ? "selected" : ""}>Needs Info</option><option ${record.status === "Approved" ? "selected" : ""}>Approved</option><option ${record.status === "Rejected" ? "selected" : ""}>Rejected</option></select>
         <input name="message" value="${escapeHtml(record.message || "Your application has been received and is waiting for review.")}" />
         <button class="button secondary" type="submit">Update Status</button>
@@ -192,10 +213,16 @@ applicationsList.addEventListener("submit", async (event) => {
   event.preventDefault();
   const row = form.closest(".application-row");
   const applicationId = row.dataset.id;
+  const record = allApplications.find((item) => item.application_id === applicationId);
   const data = new FormData(form);
   const status = String(data.get("status") || "Received");
   const message = String(data.get("message") || "");
-  await updateDoc(doc(db, "applications", applicationId), { status, message, updated_at: new Date() });
+  const adminNotes = String(data.get("admin_notes") || "");
+  const previousStatus = record?.status || "Received";
+  const submitButton = form.querySelector('button[type="submit"]');
+  submitButton.disabled = true;
+  submitButton.textContent = "Updating...";
+  await updateDoc(doc(db, "applications", applicationId), { status, message, admin_notes: adminNotes, updated_at: new Date() });
   await setDoc(doc(db, "application_status", applicationId), {
     application_id: applicationId,
     student_name: row.dataset.student,
@@ -204,6 +231,13 @@ applicationsList.addEventListener("submit", async (event) => {
     message,
     updated_at: new Date().toISOString().slice(0, 10)
   }, { merge: true });
+  if (record && (status !== previousStatus || message !== (record.message || ""))) {
+    try {
+      await sendStatusEmail(record, status, message);
+    } catch (error) {
+      window.alert(`Status saved, but email failed: ${error.message}`);
+    }
+  }
   await loadApplications();
 });
 
@@ -233,8 +267,8 @@ applicationsList.addEventListener("click", async (event) => {
 
 exportCsvButton.addEventListener("click", () => {
   const rows = getVisibleApplications();
-  const header = ["Application ID", "Student", "Email", "City", "Grade", "School", "Guardian", "Guardian Phone", "Status", "Need", "Goals"];
-  const lines = [header.map(csv).join(",")].concat(rows.map((record) => [record.application_id, record.student_name, record.email, record.city, record.grade, record.school, record.guardian_name, record.guardian_phone, record.status || "Received", record.need_statement, record.goals].map(csv).join(",")));
+  const header = ["Application ID", "Student", "Email", "City", "Grade", "School", "Guardian", "Guardian Phone", "Status", "Admin Notes", "Need", "Goals"];
+  const lines = [header.map(csv).join(",")].concat(rows.map((record) => [record.application_id, record.student_name, record.email, record.city, record.grade, record.school, record.guardian_name, record.guardian_phone, record.status || "Received", record.admin_notes || "", record.need_statement, record.goals].map(csv).join(",")));
   downloadText("success-club-applications.csv", lines.join("\n"), "text/csv");
 });
 
