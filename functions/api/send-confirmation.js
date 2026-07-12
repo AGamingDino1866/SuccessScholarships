@@ -9,10 +9,19 @@ const json = (body, status = 200) =>
     }
   });
 
+const normalizeStrings = (value) => {
+  if (typeof value === "string") return value.normalize("NFC");
+  if (Array.isArray(value)) return value.map(normalizeStrings);
+  if (value && typeof value === "object") {
+    return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, normalizeStrings(item)]));
+  }
+  return value;
+};
+
 export async function onRequestPost(context) {
   let payload;
   try {
-    payload = await context.request.json();
+    payload = normalizeStrings(await context.request.json());
   } catch {
     return json({ ok: false, error: "Invalid email request." }, 400);
   }
@@ -24,7 +33,10 @@ export async function onRequestPost(context) {
   try {
     const response = await fetch(emailScriptUrl, {
       method: "POST",
-      headers: { "content-type": "text/plain;charset=utf-8" },
+      headers: {
+        "content-type": "application/json; charset=utf-8",
+        "accept": "application/json"
+      },
       body: JSON.stringify(payload)
     });
 
