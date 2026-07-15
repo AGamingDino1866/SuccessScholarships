@@ -1,3 +1,26 @@
+const enforcePakistanOnlyAccess = async () => {
+  const allowedCountry = "PK";
+  const denyPath = "/deny.html";
+
+  if (window.location.pathname.endsWith("/deny.html")) return;
+
+  try {
+    const response = await fetch("https://ipapi.co/json/", { cache: "no-store" });
+    if (!response.ok) {
+      window.location.replace(denyPath);
+      return;
+    }
+
+    const data = await response.json();
+    const country = String(data.country_code || data.country || "").toUpperCase();
+    if (country !== allowedCountry) window.location.replace(denyPath);
+  } catch (error) {
+    window.location.replace(denyPath);
+  }
+};
+
+enforcePakistanOnlyAccess();
+
 const injectMobileNavFix = () => {
   if (document.querySelector("style[data-mobile-nav-fix]")) return;
   const style = document.createElement("style");
