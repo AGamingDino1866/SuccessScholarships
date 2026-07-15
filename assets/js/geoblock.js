@@ -7,27 +7,34 @@
 
   document.documentElement.classList.add("geoblock-checking");
 
-  const redirectToDeny = () => {
-    const target = new URL(denyPath, window.location.origin);
-    if (window.location.pathname !== target.pathname) window.location.replace(target.href);
+  const lookupCountry = async () => {
+    const urls = [
+      `https://ipapi.co/json/?t=${Date.now()}`,
+      `https://ipwho.is/?t=${Date.now()}`
+    ];
+
+    for (const url of urls) {
+      try {
+        const controller = new AbortController();
+        const timeout = window.setTimeout(() => controller.abort(), 4500);
+        const response = await fetch(url, { cache: "no-store", signal: controller.signal });
+        window.clearTimeout(timeout);
+        if (!response.ok) continue;
+        const data = await response.json();
+        const country = String(data.country_code || data.country || data.countryCode || "").toUpperCase();
+        if (country) return country;
+      } catch (error) {
+        // Try the next provider.
+      }
+    }
+
+    return "";
   };
 
-  try {
-    const response = await fetch("https://ipapi.co/json/", { cache: "no-store" });
-    if (!response.ok) {
-      redirectToDeny();
-      return;
-    }
+  const country = await lookupCountry();
+  document.documentElement.classList.remove("geoblock-checking");
 
-    const data = await response.json();
-    const country = String(data.country_code || data.country || "").toUpperCase();
-    if (country === allowedCountry) {
-      document.documentElement.classList.remove("geoblock-checking");
-      return;
-    }
-
-    redirectToDeny();
-  } catch (error) {
-    redirectToDeny();
+  if (country && country !== allowedCountry) {
+    window.location.replace(new URL(denyPath, window.location.origin).href);
   }
 })();
