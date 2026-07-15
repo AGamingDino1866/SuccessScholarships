@@ -9,10 +9,24 @@ const json = (body, status = 200) =>
 
 const ipUsage = new Map();
 const IP_DAILY_LIMIT = 150;
+const unlimitedAiEmail = "successscholarships2026@gmail.com";
 
 const todayKey = () => new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Karachi" }).format(new Date());
 const getClientIp = (request) => request.headers.get("cf-connecting-ip") || request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+const getTokenEmail = (request) => {
+  const token = request.headers.get("x-firebase-token") || "";
+  const payload = token.split(".")[1];
+  if (!payload) return "";
+  try {
+    const base64 = payload.replace(/-/g, "+").replace(/_/g, "/").padEnd(Math.ceil(payload.length / 4) * 4, "=");
+    return String(JSON.parse(atob(base64)).email || "").trim().toLowerCase();
+  } catch {
+    return "";
+  }
+};
+const hasUnlimitedAi = (request) => getTokenEmail(request) === unlimitedAiEmail;
 const reserveIpMessage = (request) => {
+  if (hasUnlimitedAi(request)) return true;
   const ip = getClientIp(request);
   const key = `${todayKey()}:${ip}`;
   const current = ipUsage.get(key) || 0;
