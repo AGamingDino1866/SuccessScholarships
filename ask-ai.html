@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ask AI Scholar - Success Club 2026</title>
+    <title>Ask AI Scholar - Success Factor</title>
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="assets/css/styles.css" />
     <style>html.geoblock-checking body{visibility:hidden}</style>
@@ -13,200 +13,27 @@
     </style>
   </head>
   <body>
-    <header class="site-header centered-header"><nav class="nav-shell centered-nav" aria-label="Main navigation"><a class="brand compact-brand logo-only" href="index.html" aria-label="Success Club home"><span class="brand-mark">SC</span></a><button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links"><span></span><span></span><span></span></button><div class="nav-links" id="nav-links"><a href="index.html">Home</a><a href="apply.html">My Applications</a><a class="active" href="ask-ai.html">Ask AI</a><a href="status.html">Status</a><a href="auth.html">Sign In</a><a href="contact.html">Contact Us</a></div></nav></header>
+    <header class="site-header centered-header"><nav class="nav-shell centered-nav" aria-label="Main navigation"><a class="brand compact-brand logo-only" href="index.html" aria-label="Success Factor home"><span class="brand-mark">SF</span></a><button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links"><span></span><span></span><span></span></button><div class="nav-links" id="nav-links"><a href="index.html">Home</a><a href="apply.html">My Applications</a><a class="active" href="ask-ai.html">Ask AI</a><a href="status.html">Status</a><a href="auth.html">Sign In</a><a href="contact.html">Contact Us</a></div></nav></header>
     <main class="ai-shell">
-      <section class="ai-banner"><div><p class="eyebrow">Ask AI Scholar</p><h1>Chat with application support.</h1><p>Ask for scholarship guidance, essay feedback, checklist help, or ideas for explaining your goals clearly. AI Scholar only answers questions about the Success Club 2026 portal.</p></div><div class="banner-controls"><div class="limit-pill" aria-live="polite"><span id="messages-left">50</span><small>left today</small></div><div class="ai-account"><span id="ai-account-state">Checking Google sign-in...</span><div class="account-actions"><button class="button" id="ai-signin" type="button">Sign in with Google</button><button class="button secondary" id="ai-signout" type="button" hidden>Sign Out</button></div></div></div></section>
+      <section class="ai-banner"><div><p class="eyebrow">Ask AI Scholar</p><h1>Chat with application support.</h1><p>Ask for scholarship guidance, essay feedback, checklist help, or ideas for explaining your goals clearly. AI Scholar only answers questions about the Success Factor portal.</p></div><div class="banner-controls"><div class="limit-pill" aria-live="polite"><span id="messages-left">50</span><small>left today</small></div><div class="ai-account"><span id="ai-account-state">Checking Google sign-in...</span><div class="account-actions"><button class="button" id="ai-signin" type="button">Sign in with Google</button><button class="button secondary" id="ai-signout" type="button" hidden>Sign Out</button></div></div></div></section>
       <section class="ai-panel"><div class="chat-tools"><label>Saved chats<select id="chat-select"></select></label><button class="button secondary" id="new-chat" type="button">New Chat</button><button class="button secondary" id="delete-chat" type="button">Delete Chat</button></div><div class="chat-window" id="chat-window" aria-live="polite"></div><form class="ai-form" id="ai-form"><label>Your message<textarea id="ai-question" maxlength="1200" placeholder="Ask about your scholarship application, goals, essay, documents, or status wording." required></textarea></label><button class="button" id="ask-button" type="submit">Send</button></form></section>
       <section class="tip-grid"><article class="tip-card"><strong>Best for</strong><p>Essay wording, application preparation, scholarship goals, and explaining need clearly.</p></article><article class="tip-card"><strong>Saved locally</strong><p>Chats are saved on this device only. They are not stored in Firebase.</p></article><article class="tip-card"><strong>Privacy</strong><p>Keep personal documents, passwords, and sensitive numbers out of AI questions.</p></article></section>
     </main>
-    <footer><p>Success Club 2026</p><a href="apply.html">My Applications</a></footer>
+    <footer><p>Success Factor</p><a href="apply.html">My Applications</a></footer>
     <script src="assets/js/script.js?v=ask-ai-memory-1"></script>
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
       import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
       import { getFirestore, doc, getDoc, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
-
       const firebaseConfig={apiKey:"AIzaSyAw65XzclDbj2AUyHKlPKP0dufaoqpd8OY",authDomain:"successscholarships-2026.firebaseapp.com",projectId:"successscholarships-2026",storageBucket:"successscholarships-2026.firebasestorage.app",messagingSenderId:"548307406445",appId:"1:548307406445:web:821b1aa139ecdb0ac2f964",measurementId:"G-7X02YSZCZ0"};
-      const app=initializeApp(firebaseConfig);
-      const auth=getAuth(app);
-      const db=getFirestore(app);
-      const provider=new GoogleAuthProvider();
-      provider.setCustomParameters({prompt:'select_account'});
-
-      const form = document.querySelector('#ai-form');
-      const question = document.querySelector('#ai-question');
-      const chatWindow = document.querySelector('#chat-window');
-      const accountState = document.querySelector('#ai-account-state');
-      const messagesLeft = document.querySelector('#messages-left');
-      const signinButton = document.querySelector('#ai-signin');
-      const signoutButton = document.querySelector('#ai-signout');
-      const askButton = document.querySelector('#ask-button');
-      const chatSelect = document.querySelector('#chat-select');
-      const newChatButton = document.querySelector('#new-chat');
-      const deleteChatButton = document.querySelector('#delete-chat');
-      let currentUser = null;
-      let currentChatId = null;
-      const unlimitedAiEmail = 'successscholarships2026@gmail.com';
-      const hasUnlimitedAi = (user) => String(user?.email || '').trim().toLowerCase() === unlimitedAiEmail;
-
-      const welcomeMessage = 'Hi, I am AI Scholar. Sign in with Google, then ask me about your Success Club 2026 application.';
-      const storageKey = 'successClubAiChats:v1';
-      const todayKey = () => new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Karachi' }).format(new Date());
-      const usageDoc = (user) => doc(db, 'ai_usage', `${user.uid}_${todayKey()}`);
-      const readChats = () => JSON.parse(localStorage.getItem(storageKey) || '[]');
-      const writeChats = (chats) => localStorage.setItem(storageKey, JSON.stringify(chats.slice(0, 20)));
-      const makeChat = () => ({ id: crypto.randomUUID(), title: 'New AI Scholar chat', createdAt: Date.now(), updatedAt: Date.now(), messages: [{ role: 'ai', text: welcomeMessage }] });
-      const getCurrentChat = () => readChats().find((chat) => chat.id === currentChatId);
-      const getRecentHistory = () => (getCurrentChat()?.messages || []).filter((item) => item.text !== welcomeMessage).slice(-12).map((item) => ({ role: item.role === 'ai' ? 'assistant' : 'user', content: item.text }));
-      const saveCurrentChat = (updater) => {
-        const chats = readChats();
-        const index = chats.findIndex((chat) => chat.id === currentChatId);
-        if (index === -1) return;
-        chats[index] = updater(chats[index]);
-        chats.sort((a, b) => b.updatedAt - a.updatedAt);
-        writeChats(chats);
-        renderChatSelect();
-      };
-      const setLeft = (value) => { messagesLeft.textContent = value === Infinity ? 'Unlimited' : String(Math.max(0, value)); };
-      const appendMessage = (role, text, loading = false, save = true) => {
-        const row = document.createElement('div');
-        row.className = `chat-row ${role}`;
-        const bubble = document.createElement('div');
-        bubble.className = `bubble${loading ? ' loading' : ''}`;
-        bubble.textContent = text;
-        row.appendChild(bubble);
-        chatWindow.appendChild(row);
-        chatWindow.scrollTop = chatWindow.scrollHeight;
-        if (save && !loading) saveMessage(role, text);
-        return bubble;
-      };
-      const saveMessage = (role, text) => {
-        saveCurrentChat((chat) => {
-          const messages = [...chat.messages, { role, text }].slice(-80);
-          const firstUser = messages.find((message) => message.role === 'user')?.text;
-          return { ...chat, title: firstUser ? firstUser.slice(0, 48) : chat.title, updatedAt: Date.now(), messages };
-        });
-      };
-      const renderChat = () => {
-        const chat = getCurrentChat();
-        chatWindow.innerHTML = '';
-        (chat?.messages || [{ role: 'ai', text: welcomeMessage }]).forEach((message) => appendMessage(message.role, message.text, false, false));
-      };
-      const renderChatSelect = () => {
-        const chats = readChats();
-        chatSelect.innerHTML = chats.map((chat) => `<option value="${chat.id}">${chat.title || 'AI Scholar chat'}</option>`).join('');
-        chatSelect.value = currentChatId;
-      };
-      const startChat = (chat = makeChat()) => {
-        const chats = readChats().filter((item) => item.id !== chat.id);
-        currentChatId = chat.id;
-        writeChats([chat, ...chats]);
-        renderChatSelect();
-        renderChat();
-      };
-      const loadInitialChat = () => {
-        const chats = readChats();
-        if (chats.length) {
-          currentChatId = chats[0].id;
-          renderChatSelect();
-          renderChat();
-        } else {
-          startChat();
-        }
-      };
-
-      const refreshCounter = async (user) => {
-        if (!user) { setLeft(50); return; }
-        if (hasUnlimitedAi(user)) { setLeft(Infinity); return; }
-        const snap = await getDoc(usageDoc(user));
-        const count = snap.exists() ? Number(snap.data().count || 0) : 0;
-        setLeft(50 - count);
-      };
-
-      const reserveDailyMessage = async (user) => {
-        if (hasUnlimitedAi(user)) return Infinity;
-        return runTransaction(db, async (transaction) => {
-          const ref = usageDoc(user);
-          const snap = await transaction.get(ref);
-          const count = snap.exists() ? Number(snap.data().count || 0) : 0;
-          if (count >= 50) throw new Error('Daily AI Scholar limit reached for this Google account. Try again tomorrow.');
-          const nextCount = count + 1;
-          transaction.set(ref, { uid: user.uid, email: user.email, date: todayKey(), count: nextCount, updated_at: serverTimestamp() }, { merge: true });
-          return 50 - nextCount;
-        });
-      };
-
-      loadInitialChat();
-      chatSelect.addEventListener('change', () => { currentChatId = chatSelect.value; renderChat(); });
-      newChatButton.addEventListener('click', () => startChat());
-      deleteChatButton.addEventListener('click', () => {
-        const chats = readChats().filter((chat) => chat.id !== currentChatId);
-        writeChats(chats);
-        if (chats.length) {
-          currentChatId = chats[0].id;
-          renderChatSelect();
-          renderChat();
-        } else {
-          startChat();
-        }
-      });
-      signinButton.addEventListener('click', async () => { await signInWithPopup(auth, provider); });
-      signoutButton.addEventListener('click', async () => { await signOut(auth); });
-      onAuthStateChanged(auth, async (user) => {
-        currentUser = user;
-        signinButton.hidden = Boolean(user);
-        signoutButton.hidden = !user;
-        if (user) {
-          accountState.textContent = `Signed in as ${user.email}`;
-          await refreshCounter(user);
-        } else {
-          accountState.textContent = 'Sign in with Google to use AI Scholar.';
-          setLeft(50);
-        }
-      });
-
-      form.addEventListener('submit', async (event) => {
-        event.preventDefault();
-        const message = question.value.trim();
-        if (!message) return;
-        if (!currentUser) {
-          appendMessage('ai', 'Please sign in with Google before using AI Scholar.');
-          return;
-        }
-        appendMessage('user', message);
-        question.value = '';
-        const loadingBubble = appendMessage('ai', 'Thinking...', true, false);
-        askButton.disabled = true;
-        try {
-          const remaining = await reserveDailyMessage(currentUser);
-          setLeft(remaining);
-          const token = await currentUser.getIdToken();
-          const response = await fetch('/api/ask-ai', {
-            method: 'POST',
-            headers: { 'content-type': 'application/json', 'x-firebase-token': token },
-            body: JSON.stringify({ message, history: getRecentHistory() })
-          });
-          const contentType = response.headers.get('content-type') || '';
-          if (!contentType.includes('application/json')) {
-            throw new Error('AI Scholar backend is not live yet. Redeploy Cloudflare Pages, then try again.');
-          }
-          const payload = await response.json();
-          if (!response.ok || !payload.ok) throw new Error(payload.error || 'AI Scholar is not available yet.');
-          loadingBubble.classList.remove('loading');
-          loadingBubble.textContent = payload.answer;
-          saveMessage('ai', payload.answer);
-        } catch (error) {
-          const errorText = error.message.replace('Firebase: ', '');
-          loadingBubble.classList.remove('loading');
-          loadingBubble.textContent = errorText;
-          saveMessage('ai', errorText);
-          await refreshCounter(currentUser).catch(() => {});
-        } finally {
-          askButton.disabled = false;
-          question.focus();
-          chatWindow.scrollTop = chatWindow.scrollHeight;
-        }
-      });
+      const app=initializeApp(firebaseConfig);const auth=getAuth(app);const db=getFirestore(app);const provider=new GoogleAuthProvider();provider.setCustomParameters({prompt:'select_account'});
+      const form=document.querySelector('#ai-form');const question=document.querySelector('#ai-question');const chatWindow=document.querySelector('#chat-window');const accountState=document.querySelector('#ai-account-state');const messagesLeft=document.querySelector('#messages-left');const signinButton=document.querySelector('#ai-signin');const signoutButton=document.querySelector('#ai-signout');const askButton=document.querySelector('#ask-button');const chatSelect=document.querySelector('#chat-select');const newChatButton=document.querySelector('#new-chat');const deleteChatButton=document.querySelector('#delete-chat');let currentUser=null;let currentChatId=null;const unlimitedAiEmail='successscholarships2026@gmail.com';const hasUnlimitedAi=(user)=>String(user?.email||'').trim().toLowerCase()===unlimitedAiEmail;
+      const welcomeMessage='Hi, I am AI Scholar. Sign in with Google, then ask me about your Success Factor application.';const storageKey='successFactorAiChats:v1';const todayKey=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Karachi'}).format(new Date());const usageDoc=(user)=>doc(db,'ai_usage',`${user.uid}_${todayKey()}`);const readChats=()=>JSON.parse(localStorage.getItem(storageKey)||'[]');const writeChats=(chats)=>localStorage.setItem(storageKey,JSON.stringify(chats.slice(0,20)));const makeChat=()=>({id:crypto.randomUUID(),title:'New AI Scholar chat',createdAt:Date.now(),updatedAt:Date.now(),messages:[{role:'ai',text:welcomeMessage}]});const getCurrentChat=()=>readChats().find((chat)=>chat.id===currentChatId);const getRecentHistory=()=>(getCurrentChat()?.messages||[]).filter((item)=>item.text!==welcomeMessage).slice(-12).map((item)=>({role:item.role==='ai'?'assistant':'user',content:item.text}));
+      const saveCurrentChat=(updater)=>{const chats=readChats();const index=chats.findIndex((chat)=>chat.id===currentChatId);if(index===-1)return;chats[index]=updater(chats[index]);chats.sort((a,b)=>b.updatedAt-a.updatedAt);writeChats(chats);renderChatSelect();};const setLeft=(value)=>{messagesLeft.textContent=value===Infinity?'Unlimited':String(Math.max(0,value));};const appendMessage=(role,text,loading=false,save=true)=>{const row=document.createElement('div');row.className=`chat-row ${role}`;const bubble=document.createElement('div');bubble.className=`bubble${loading?' loading':''}`;bubble.textContent=text;row.appendChild(bubble);chatWindow.appendChild(row);chatWindow.scrollTop=chatWindow.scrollHeight;if(save&&!loading)saveMessage(role,text);return bubble;};
+      const saveMessage=(role,text)=>{saveCurrentChat((chat)=>{const messages=[...chat.messages,{role,text}].slice(-80);const firstUser=messages.find((message)=>message.role==='user')?.text;return{...chat,title:firstUser?firstUser.slice(0,48):chat.title,updatedAt:Date.now(),messages};});};const renderChat=()=>{const chat=getCurrentChat();chatWindow.innerHTML='';(chat?.messages||[{role:'ai',text:welcomeMessage}]).forEach((message)=>appendMessage(message.role,message.text,false,false));};const renderChatSelect=()=>{const chats=readChats();chatSelect.innerHTML=chats.map((chat)=>`<option value="${chat.id}">${chat.title||'AI Scholar chat'}</option>`).join('');chatSelect.value=currentChatId;};const startChat=(chat=makeChat())=>{const chats=readChats().filter((item)=>item.id!==chat.id);currentChatId=chat.id;writeChats([chat,...chats]);renderChatSelect();renderChat();};
+      const loadInitialChat=()=>{const chats=readChats();if(chats.length){currentChatId=chats[0].id;renderChatSelect();renderChat();}else{startChat();}};const refreshCounter=async(user)=>{if(!user){setLeft(50);return;}if(hasUnlimitedAi(user)){setLeft(Infinity);return;}const snap=await getDoc(usageDoc(user));const count=snap.exists()?Number(snap.data().count||0):0;setLeft(50-count);};const reserveDailyMessage=async(user)=>{if(hasUnlimitedAi(user))return Infinity;return runTransaction(db,async(transaction)=>{const ref=usageDoc(user);const snap=await transaction.get(ref);const count=snap.exists()?Number(snap.data().count||0):0;if(count>=50)throw new Error('Daily AI Scholar limit reached for this Google account. Try again tomorrow.');const nextCount=count+1;transaction.set(ref,{uid:user.uid,email:user.email,date:todayKey(),count:nextCount,updated_at:serverTimestamp()},{merge:true});return 50-nextCount;});};
+      loadInitialChat();chatSelect.addEventListener('change',()=>{currentChatId=chatSelect.value;renderChat();});newChatButton.addEventListener('click',()=>startChat());deleteChatButton.addEventListener('click',()=>{const chats=readChats().filter((chat)=>chat.id!==currentChatId);writeChats(chats);if(chats.length){currentChatId=chats[0].id;renderChatSelect();renderChat();}else{startChat();}});signinButton.addEventListener('click',async()=>{await signInWithPopup(auth,provider);});signoutButton.addEventListener('click',async()=>{await signOut(auth);});onAuthStateChanged(auth,async(user)=>{currentUser=user;signinButton.hidden=Boolean(user);signoutButton.hidden=!user;if(user){accountState.textContent=`Signed in as ${user.email}`;await refreshCounter(user);}else{accountState.textContent='Sign in with Google to use AI Scholar.';setLeft(50);}});
+      form.addEventListener('submit',async(event)=>{event.preventDefault();const message=question.value.trim();if(!message)return;if(!currentUser){appendMessage('ai','Please sign in with Google before using AI Scholar.');return;}appendMessage('user',message);question.value='';const loadingBubble=appendMessage('ai','Thinking...',true,false);askButton.disabled=true;try{const remaining=await reserveDailyMessage(currentUser);setLeft(remaining);const token=await currentUser.getIdToken();const response=await fetch('/api/ask-ai',{method:'POST',headers:{'content-type':'application/json','x-firebase-token':token},body:JSON.stringify({message,history:getRecentHistory()})});const contentType=response.headers.get('content-type')||'';if(!contentType.includes('application/json'))throw new Error('AI Scholar backend is not live yet. Redeploy Cloudflare Pages, then try again.');const payload=await response.json();if(!response.ok||!payload.ok)throw new Error(payload.error||'AI Scholar is not available yet.');loadingBubble.classList.remove('loading');loadingBubble.textContent=payload.answer;saveMessage('ai',payload.answer);}catch(error){const errorText=error.message.replace('Firebase: ','');loadingBubble.classList.remove('loading');loadingBubble.textContent=errorText;saveMessage('ai',errorText);await refreshCounter(currentUser).catch(()=>{});}finally{askButton.disabled=false;question.focus();chatWindow.scrollTop=chatWindow.scrollHeight;}});
     </script>
   </body>
 </html>
