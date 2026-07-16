@@ -1,3 +1,5 @@
+const GEO_BLOCK_ENABLED = false;
+
 const detectVisitorCountry = async () => {
   const lookupUrls = [
     `https://ipapi.co/json/?t=${Date.now()}`,
@@ -23,6 +25,9 @@ const detectVisitorCountry = async () => {
 };
 
 const enforcePakistanOnlyAccess = async () => {
+  // Flip GEO_BLOCK_ENABLED to true if Pakistan-only access is approved again.
+  if (!GEO_BLOCK_ENABLED) return;
+
   const allowedCountry = "PK";
   const denyPath = "/deny.html";
 
@@ -33,6 +38,16 @@ const enforcePakistanOnlyAccess = async () => {
 };
 
 enforcePakistanOnlyAccess();
+
+const setBrandMark = () => {
+  document.querySelectorAll(".brand-mark").forEach((mark) => {
+    mark.textContent = "SF";
+  });
+
+  document.querySelectorAll(".brand[aria-label]").forEach((brand) => {
+    if (brand.getAttribute("aria-label") === "Success Club home") brand.setAttribute("aria-label", "Success Factor home");
+  });
+};
 
 const injectMobileNavFix = () => {
   if (document.querySelector("style[data-mobile-nav-fix]")) return;
@@ -52,6 +67,7 @@ const injectMobileNavFix = () => {
 };
 
 const setupNavigation = () => {
+  setBrandMark();
   injectMobileNavFix();
 
   const navLinks = document.querySelector(".nav-links");
