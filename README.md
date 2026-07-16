@@ -1,6 +1,6 @@
-# Success Club 2026 Scholarship Portal
+# Success Factor Scholarship Portal
 
-A scholarship website for the **Success Club 2026 - SDG 4: Quality Education** project.
+A scholarship website for the **Success Factor - SDG 4: Quality Education** project.
 
 The website helps underprivileged students learn about scholarship support, sign in with Google, submit an application inside the site, ask AI Scholar for application guidance, and check their application status later.
 
@@ -60,7 +60,7 @@ successscholarships2026@gmail.com
 
 ## Project Theme
 
-**Success Club 2026**
+**Success Factor**
 
 **SDG 4: Quality Education**
 
