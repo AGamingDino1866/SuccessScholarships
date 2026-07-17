@@ -1,67 +1,147 @@
-# Success Factor Scholarship Portal
+# Sahulat Family Scholarship Portal
 
-A scholarship website for the **Success Factor - SDG 4: Quality Education** project.
+A lightweight scholarship portal for Sahulat Family. The site helps students and families learn about the program, apply online, check status updates, read eligibility guidance, and get short AI help while preparing an application.
 
-The website helps underprivileged students learn about scholarship support, sign in with Google, submit an application inside the site, ask AI Scholar for application guidance, and check their application status later.
+## Live Site
 
-## Website Pages
-
-### Home
-
-The homepage introduces the scholarship mission: helping underprivileged students continue their education. It includes the main hero message, mission sections, university inspiration cards, and program guidance.
-
-### My Applications
-
-The My Applications page is where students apply. Students sign in with Google and submit the built-in application form.
-
-### Ask AI
-
-The Ask AI page gives students an AI Scholar helper for application preparation, goal wording, essay guidance, and respectful financial need explanations.
-
-### Status
-
-The Status page lets students check an application update using the application ID shown after submission.
-
-### Sign In
-
-The Sign In page lets students continue with Google. It also includes a sign-out option so students can switch Google accounts if needed.
-
-### Contact Us
-
-The Contact page gives students the scholarship email and tells them what details to include when asking for help.
-
-### Admin Page
-
-The admin page is hidden from public navigation. The scholarship team can sign in with the admin Google account, review submitted applications, and update statuses such as Received, Under Review, Needs Info, Approved, or Rejected.
-
-## Student Flow
+Primary Pages deployment:
 
 ```txt
-Visit Home -> Sign In with Google -> Open My Applications -> Submit application -> Save application ID -> Ask AI if needed -> Check status
+https://successscholarships.pages.dev
 ```
+
+Cloudflare preview deployments may look like:
+
+```txt
+https://<preview-id>.successscholarships.pages.dev
+```
+
+## Contact
+
+Official Gmail:
+
+```txt
+sahulatfamilypk@gmail.com
+```
+
+Students should apply on the website first. Any required PDF documents should be emailed after applying, with the application ID in the email subject.
 
 ## Main Features
 
+- Public homepage with scholarship information and Pakistani university links.
+- Google sign-in for applications.
+- Application form saved to Firebase Firestore.
+- Duplicate application warning before resubmitting.
+- Status lookup by application ID.
+- Eligibility page with simple income and document guidance.
+- Ask AI page for short application help.
+- Admin dashboard for reviewing applications, updating statuses, exporting CSV, downloading records, and deleting entries.
+- Pakistan-only geoblock code exists but is currently disabled in `assets/js/geoblock.js` / `assets/js/script.js`.
+
+## Admin
+
+Admin page:
+
 ```txt
-Built-in application form
-Google sign-in
-Ask AI Scholar
-Application status lookup
-Admin review dashboard
-Status update controls
-Contact page
+/admin
 ```
 
-## Contact Email
+Current admin Gmail:
 
 ```txt
-successscholarships2026@gmail.com
+sahulatfamilypk@gmail.com
 ```
 
-## Project Theme
+If the admin page signs in but cannot load applications, check Firestore security rules. The rules must allow the Sahulat Family admin email to read/write the `applications` and `application_status` collections.
 
-**Success Factor**
+Firebase Authentication must also include the deployed Pages domains under authorized domains.
 
-**SDG 4: Quality Education**
+Recommended authorized domains:
 
-Helping underprivileged students continue their education through a clear and accessible scholarship process.
+```txt
+successscholarships.pages.dev
+<preview-id>.successscholarships.pages.dev
+```
+
+## Firebase
+
+The site currently uses the existing Firebase project:
+
+```txt
+successscholarships-2026
+```
+
+Collections used:
+
+- `applications`
+- `application_status`
+- `application_submissions`
+- `ai_usage`
+
+Existing application IDs may still use older prefixes. New application IDs use:
+
+```txt
+SF2026-XXXXX
+```
+
+## AI
+
+Ask AI uses the Cloudflare Pages Function:
+
+```txt
+functions/api/ask-ai.js
+```
+
+The assistant is branded as Sahulat AI and is scoped to scholarship/application help only.
+
+Required Cloudflare Pages environment variable:
+
+```txt
+GROQ_API_KEY
+```
+
+Optional:
+
+```txt
+GROQ_MODEL
+```
+
+The Sahulat Family Gmail has the unlimited AI usage override:
+
+```txt
+sahulatfamilypk@gmail.com
+```
+
+## Confirmation Email
+
+Application confirmation email is handled by:
+
+```txt
+functions/api/send-confirmation.js
+```
+
+Cloudflare environment variables may be required depending on the current email provider setup.
+
+## Files
+
+- `index.html` - homepage
+- `apply.html` - application form
+- `eligibility.html` - eligibility and document guidance
+- `ask-ai.html` - AI chat UI
+- `status.html` - status lookup
+- `auth.html` - Google sign-in
+- `contact.html` - contact page
+- `admin.html` - admin dashboard
+- `assets/js/script.js` - shared public behavior, navigation, runtime branding, disabled geoblock helper
+- `assets/js/admin.js` - admin dashboard logic
+- `assets/js/geoblock.js` - geoblock code, currently disabled
+- `functions/api/ask-ai.js` - AI backend
+- `functions/api/send-confirmation.js` - confirmation email backend
+- `favicon.svg` - Sahulat Family transparent favicon/logo mark
+
+## Notes
+
+- Keep Firebase project identifiers unchanged unless the backend is actually migrated.
+- Change Firestore security rules when changing the admin email.
+- Change Firebase Authentication authorized domains when testing on a new Pages preview URL.
+- Browser favicon caches are stubborn; hard refresh or clear site data if the old icon appears.
