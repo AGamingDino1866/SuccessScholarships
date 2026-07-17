@@ -1,6 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="10" fill="#2c2c85"/>
-  <path d="M14 41c5 5 11 8 18 8 8 0 15-4 19-10" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
-  <path d="M18 23h28" stroke="#ffffff" stroke-width="7" stroke-linecap="round"/>
-  <path d="M20 33h20" stroke="#ffffff" stroke-width="7" stroke-linecap="round"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Sahulat Family logo"><rect width="128" height="128" rx="24" fill="#fff"/><circle cx="64" cy="64" r="55" fill="none" stroke="#062a5f" stroke-width="8"/><path d="M28 86c14-8 28-8 36 0 8-8 22-8 36 0" fill="none" stroke="#062a5f" stroke-width="7" stroke-linecap="round"/><path d="M24 92c17-6 30-5 40 3 10-8 23-9 40-3" fill="none" stroke="#062a5f" stroke-width="7" stroke-linecap="round"/><circle cx="49" cy="61" r="10" fill="#062a5f"/><circle cx="79" cy="61" r="10" fill="#062a5f"/><path d="M38 83c2-13 8-18 18-18h1c-3 5-3 12 0 19" fill="#062a5f"/><path d="M71 84c3-7 3-14 0-19h1c10 0 16 5 18 18" fill="#062a5f"/><path d="M64 24 91 36 64 48 37 36Z" fill="#062a5f"/><path d="M48 42v13c10 7 22 7 32 0V42" fill="#062a5f"/><path d="M88 38v18" stroke="#062a5f" stroke-width="4" stroke-linecap="round"/><circle cx="88" cy="59" r="3" fill="#062a5f"/></svg>
