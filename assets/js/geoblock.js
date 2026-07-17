@@ -1,10 +1,10 @@
 (async () => {
-  const GEO_BLOCK_ENABLED = false;
+  const GEO_BLOCK_ENABLED = true;
   const allowedCountry = "PK";
   const denyPath = "/deny.html";
   const currentPath = window.location.pathname;
 
-  // Flip GEO_BLOCK_ENABLED to true if Pakistan-only access is approved again.
+  // Flip GEO_BLOCK_ENABLED to false if Pakistan-only access needs to be paused.
   if (!GEO_BLOCK_ENABLED) return;
 
   if (currentPath.endsWith("/deny.html")) return;
