@@ -1,4 +1,4 @@
-const GEO_BLOCK_ENABLED = false;
+const GEO_BLOCK_ENABLED = true;
 
 const detectVisitorCountry = async () => {
   const lookupUrls = [
