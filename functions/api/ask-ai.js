@@ -9,7 +9,7 @@ const json = (body, status = 200) =>
 
 const ipUsage = new Map();
 const IP_DAILY_LIMIT = 150;
-const unlimitedAiEmail = "successscholarships2026@gmail.com";
+const unlimitedAiEmail = "sahulatfamilypk@gmail.com";
 
 const todayKey = () => new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Karachi" }).format(new Date());
 const getClientIp = (request) => request.headers.get("cf-connecting-ip") || request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
@@ -42,19 +42,19 @@ const reserveIpMessage = (request) => {
   return true;
 };
 
-const siteContext = `Success Factor scholarship website context:
+const siteContext = `Sahulat Family scholarship website context:
 - Purpose: help students who need financial support continue their education.
 - Audience: students and families preparing scholarship applications in Pakistan.
 - Home page: explains the program and links to Pakistani university admissions pages.
 - My Application page: students sign in with Google, fill the application form, and submit details like name, city, grade, school, guardian contact, need statement, and study goals.
 - Ask AI page: helps students write clearer and honest application answers.
-- Eligibility page: explains how need is checked. The team looks at monthly family income 40%, family size 15%, school costs 15%, family hardship 15%, guardian work 10%, and study effort 5%. Income guide: below PKR 45,000 gets most priority; PKR 45,001-60,000 gets high priority; PKR 60,001-80,000 gets some priority; PKR 80,001-100,000 has a small chance; above PKR 100,000 is usually not eligible unless there is serious hardship. Students should apply on the website first, then email needed PDF documents to successscholarships2026@gmail.com with their application ID in the email subject.
+- Eligibility page: explains how need is checked. The team looks at monthly family income 40%, family size 15%, school costs 15%, family hardship 15%, guardian work 10%, and study effort 5%. Income guide: below PKR 45,000 gets most priority; PKR 45,001-60,000 gets high priority; PKR 60,001-80,000 gets some priority; PKR 80,001-100,000 has a small chance; above PKR 100,000 is usually not eligible unless there is serious hardship. Students should apply on the website first, then email needed PDF documents to sahulatfamilypk@gmail.com with their application ID in the email subject.
 - Status page: students check updates with their application ID.
-- Contact page: official help email is successscholarships2026@gmail.com.
+- Contact page: official help email is sahulatfamilypk@gmail.com.
 - Admin page: hidden page for the scholarship team to review applications and update statuses.
-- AI Scholar cannot see submitted applications, cannot check live status, cannot approve or reject students, and cannot change admin records.`;
+- Sahulat AI cannot see submitted applications, cannot check live status, cannot approve or reject students, and cannot change admin records.`;
 
-const systemPrompt = `You are AI Scholar for the Success Factor scholarship portal.
+const systemPrompt = `You are Sahulat AI for the Sahulat Family scholarship portal.
 Use only the website context below, the recent conversation, and the student's latest question.
 ${siteContext}
 
@@ -64,11 +64,11 @@ Conversation memory rules:
 - If the student asks to continue or revise something, use the most relevant previous message from the recent chat.
 
 Scope rules:
-- Answer only questions related to Success Factor, scholarship applications, education goals, financial-need wording, application preparation, status wording, documents, contacting the program, or using this website.
+- Answer only questions related to Sahulat Family, scholarship applications, education goals, financial-need wording, application preparation, status wording, documents, contacting the program, or using this website.
 - If a question is unrelated, politely refuse in one short sentence and redirect the student to ask about the scholarship application or website.
 - Do not give unrelated study tips, random facts, general life advice, entertainment, coding help, medical/legal/financial advice, or anything outside this portal.
 - Do not promise approval, invent official decisions, claim to check live records, or ask for passwords, ID numbers, bank details, or sensitive documents.
-- If official help is needed, tell them to contact successscholarships2026@gmail.com.
+- If official help is needed, tell them to contact sahulatfamilypk@gmail.com.
 
 Tone and length rules:
 - Write in simple, respectful English for students and families. Do not sound childish.
@@ -101,15 +101,15 @@ export async function onRequestPost(context) {
   const { request, env } = context;
 
   if (!env.GROQ_API_KEY) {
-    return json({ ok: false, error: "AI Scholar is not configured yet. Add GROQ_API_KEY in Cloudflare Pages environment variables." }, 500);
+    return json({ ok: false, error: "Sahulat AI is not configured yet. Add GROQ_API_KEY in Cloudflare Pages environment variables." }, 500);
   }
 
   if (!request.headers.get("x-firebase-token")) {
-    return json({ ok: false, error: "Please sign in with Google before using AI Scholar." }, 401);
+    return json({ ok: false, error: "Please sign in with Google before using Sahulat AI." }, 401);
   }
 
   if (!reserveIpMessage(request)) {
-    return json({ ok: false, error: "Too many AI Scholar messages from this network today. Please try again tomorrow." }, 429);
+    return json({ ok: false, error: "Too many Sahulat AI messages from this network today. Please try again tomorrow." }, 429);
   }
 
   let body;
@@ -149,7 +149,7 @@ export async function onRequestPost(context) {
   }
 
   const answer = payload.choices?.[0]?.message?.content?.trim();
-  if (!answer) return json({ ok: false, error: "AI Scholar returned an empty answer." }, 502);
+  if (!answer) return json({ ok: false, error: "Sahulat AI returned an empty answer." }, 502);
 
   return json({ ok: true, answer });
 }
