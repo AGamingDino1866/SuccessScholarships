@@ -39,6 +39,42 @@ const enforcePakistanOnlyAccess = async () => {
 
 enforcePakistanOnlyAccess();
 
+const applySahulatFamilyBranding = () => {
+  const oldEmail = "successscholarships2026@gmail.com";
+  const newEmail = "sahulatfamilypk@gmail.com";
+  const replacements = [
+    ["Success Factor", "Sahulat Family"],
+    ["Success Club", "Sahulat Family"],
+    [oldEmail, newEmail]
+  ];
+
+  document.title = replacements.reduce((title, [from, to]) => title.replaceAll(from, to), document.title);
+
+  document.querySelectorAll("a").forEach((link) => {
+    replacements.forEach(([from, to]) => {
+      if (link.href.includes(from)) link.href = link.href.replaceAll(from, to);
+      if (link.textContent.includes(from)) link.textContent = link.textContent.replaceAll(from, to);
+    });
+    if (link.href.includes(encodeURIComponent("Success Factor"))) {
+      link.href = link.href.replaceAll(encodeURIComponent("Success Factor"), encodeURIComponent("Sahulat Family"));
+    }
+  });
+
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  const textNodes = [];
+  while (walker.nextNode()) textNodes.push(walker.currentNode);
+  textNodes.forEach((node) => {
+    replacements.forEach(([from, to]) => {
+      if (node.nodeValue.includes(from)) node.nodeValue = node.nodeValue.replaceAll(from, to);
+    });
+  });
+
+  document.querySelectorAll(".brand-mark").forEach((mark) => {
+    mark.textContent = "";
+    mark.setAttribute("aria-hidden", "true");
+  });
+};
+
 const injectNavyTheme = () => {
   if (document.querySelector("style[data-navy-theme]")) return;
   const style = document.createElement("style");
@@ -47,7 +83,8 @@ const injectNavyTheme = () => {
     :root{--ink:#2c2c85!important;--muted:#565680!important;--green:#2c2c85!important;--green-2:#4545a3!important;--rose:#2c2c85!important;--rose-dark:#2c2c85!important;--gold:#2c2c85!important;--sky:#2c2c85!important;--blush:#ffffff!important;--cream:#ffffff!important;--paper:#ffffff!important;--card:#ffffff!important;--line:rgba(44,44,133,.16)!important;--shadow:0 24px 70px rgba(44,44,133,.14)!important;--soft-shadow:0 16px 40px rgba(44,44,133,.1)!important}
     body,.centered-header,.site-header,.auth-box,.result-grid div,.receipt-note,.note-band:not(.force-navy){background:#ffffff!important;color:#2c2c85!important}
     .soft-band{background:#ffffff!important;color:#2c2c85!important}
-    .brand-mark,.button.primary,.button:not(.secondary):not(.light),.nav-links a.active,.nav-links a:hover,.scholarship-card.featured,.cta-panel,.note-band,.step span,.google-dot,.chat-row.user .bubble{background:#2c2c85!important;color:#ffffff!important}
+    .button.primary,.button:not(.secondary):not(.light),.nav-links a.active,.nav-links a:hover,.scholarship-card.featured,.cta-panel,.note-band,.step span,.google-dot,.chat-row.user .bubble{background:#2c2c85!important;color:#ffffff!important}
+    .brand-mark{display:block!important;overflow:hidden!important;border-radius:50%!important;background:#ffffff url("favicon.svg") center/cover no-repeat!important;color:transparent!important;text-indent:-999px!important;box-shadow:0 10px 24px rgba(44,44,133,.16)!important}
     .button.secondary,.button.light,.google-button,.account-actions .button,.limit-pill,input,select,textarea,.surface-card,.feature-card,.university-card,.portal-card,.scholarship-card,.ai-panel,.tip-card,.lookup-card,.result-card,.contact-card,.auth-panel,.auth-card,.admin-panel,.criteria-card,.docs-card,.income-card{background:#ffffff!important;color:#2c2c85!important;border-color:rgba(44,44,133,.16)!important}
     .hero-card,.auth-hero,.contact-hero,.status-hero,.eligibility-hero,.ai-banner{background:linear-gradient(135deg,rgba(44,44,133,.92),rgba(44,44,133,.62)),url("assets/education-hero.png") center/cover!important;color:#ffffff!important}
     .hero-card p,.auth-hero p,.contact-hero p,.status-hero p,.eligibility-hero p,.ai-banner p,.scholarship-card.featured p,.scholarship-card.featured li,.cta-panel p,.note-band p{color:rgba(255,255,255,.86)!important}
@@ -111,3 +148,4 @@ const setupNavigation = () => {
 };
 
 setupNavigation();
+applySahulatFamilyBranding();
