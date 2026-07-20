@@ -1,225 +1,328 @@
-# Success Factor - Development Guide
+# Success Factor - Technical Reference
 
-**Success Factor** (Sahulat Family Scholarship Portal) is a full-stack scholarship application platform built by a 13-year-old developer for Pakistani students seeking educational support.
+Cloudflare Pages static site + Firestore + Firebase Auth + Groq LLM.
 
-## Project Overview
+## ⚠️ Git Workflow
 
-### What It Does
-- Public homepage with scholarship information
-- Google OAuth sign-in for students
-- Online scholarship application form
-- Real-time application status lookup
-- Eligibility criteria and document guidance
-- AI chatbot for application help (Groq API)
-- Admin dashboard for reviewing and managing applications
-- Pakistan-only geoblock (Cloudflare + browser fallback)
-
-### Tech Stack
-- **Frontend:** HTML, CSS, JavaScript (vanilla)
-- **Backend:** Firebase Firestore (database), Firebase Auth (Google OAuth)
-- **AI:** Groq API (Ask AI feature)
-- **Email:** Cloudflare Pages Functions (confirmation emails)
-- **Deployment:** Cloudflare Pages
-- **Status:** Live at https://successscholarships.pages.dev
-
-## ⚠️ IMPORTANT: Git Workflow
-
-**ALWAYS push directly to `main` branch.** Do NOT create feature branches or push to other branches.
-
+**ALWAYS push to `main` branch only.**
+- No feature branches
 - All commits go to `main`
-- All changes pushed immediately to `main`
-- No separate feature branches
-- No intermediate branches for pull requests
+- Commits must be GPG signed with key `928DF747700C2142`
+- Commit authors must be `Claude <noreply@anthropic.com>`
 
-This is the only way to work on this repo.
+## Architecture
 
-## File Structure
+### Stack
+- **CDN/Hosting:** Cloudflare Pages (zero cold start)
+- **Auth:** Firebase Authentication (Google OAuth 2.0 + native session)
+- **Database:** Firestore (Realtime + REST APIs)
+- **Serverless:** Cloudflare Pages Functions (Node.js)
+- **LLM:** Groq API (LLama 3.1 8B Instant)
+- **Geoblock:** Cloudflare middleware + browser fallback (IP-based, Pakistan-only)
+- **Build:** None (vanilla static site)
+
+### Database Schema
+
+**Firestore Project:** `successscholarships-2026`
 
 ```
-├── index.html              # Homepage - mission, features, Pakistani universities
-├── apply.html              # Application form with Firebase integration
-├── eligibility.html        # Eligibility criteria and income guide
-├── ask-ai.html             # AI chatbot UI (Groq backend)
-├── status.html             # Application status lookup by ID
-├── auth.html               # Google OAuth sign-in page
-├── contact.html            # Contact information and support
-├── admin.html              # Admin dashboard (application review)
-├── deny.html               # Geoblock message (Pakistan-only)
-├── favicon.svg             # Logo/brand mark
-├── assets/
-│   ├── css/styles.css      # Shared styles (color vars, typography, layout)
-│   ├── js/script.js        # Shared functionality, navigation, geoblock fallback
-│   ├── js/admin.js         # Admin dashboard logic
-│   ├── js/geoblock.js      # Pakistan geoblock detection (browser fallback)
-│   └── *.png/jpg           # Hero images, backgrounds
-├── functions/api/
-│   ├── ask-ai.js           # Groq AI backend (Cloudflare Pages Function)
-│   └── send-confirmation.js # Confirmation email backend
-├── _routes.json            # Cloudflare Pages routing config
-└── CLAUDE.md               # This file
+/applications/{application_id}
+  - student_name: string
+  - email: string
+  - uid: string (Firebase UID)
+  - grade: string
+  - school: string
+  - guardian_name: string
+  - guardian_phone: string
+  - city: string (enum: Karachi, Lahore, Islamabad, Other)
+  - need_statement: string (textarea)
+  - goals: string (textarea)
+  - status: string (default: "Received")
+  - message: string
+  - created_at: timestamp (serverTimestamp)
+  - updated_at: timestamp (serverTimestamp)
+
+/application_status/{application_id}
+  - application_id: string
+  - student_name: string
+  - city: string
+  - status: string
+  - message: string
+  - updated_at: ISO8601 date string
+
+/application_submissions/{uid}
+  - uid: string
+  - email: string
+  - application_id: string
+  - updated_at: timestamp (serverTimestamp)
+
+/ai_usage/{date-ip}
+  - date: YYYY-MM-DD (Asia/Karachi TZ)
+  - ip: string
+  - count: integer (incremented with each request)
 ```
 
-## Key Features
+### Pages & Routes
 
-### Language Simplification
-All pages use simplified text aimed at younger students and non-native English speakers:
-- Shorter sentences
-- Simpler vocabulary
-- Clear, direct language
-- No jargon
+| Route | File | Auth | Purpose |
+|-------|------|------|---------|
+| `/` | `index.html` | None | Homepage (mission, stats, institutions, flow) |
+| `/apply.html` | `apply.html` | Required | Application form (Firestore writes) |
+| `/eligibility.html` | `eligibility.html` | None | Criteria breakdown + income tiers |
+| `/ask-ai.html` | `ask-ai.html` | Required | Chat UI (calls `/api/ask-ai`) |
+| `/status.html` | `status.html` | None | Status lookup (Firestore reads) |
+| `/auth.html` | `auth.html` | None | OAuth sign-in flow |
+| `/contact.html` | `contact.html` | None | Contact/support info |
+| `/admin.html` | `admin.html` | Required | Admin dashboard (Firestore CRUD) |
+| `/deny.html` | `deny.html` | None | Geoblock page (served by CF middleware) |
 
-### Application System
-- Form saves to Firestore in real-time
-- Application ID: `SF2026-XXXXX`
-- Duplicate submission warning
-- Confirmation email with application ID
+### Firebase Config (Hardcoded)
 
-### Status Lookup
-- Students enter their ID to check progress
-- Statuses: Received, Under Review, Approved, Rejected, etc.
-- Printable receipt
-- Email notifications for updates
-
-### Admin Dashboard
-- Review applications in Firestore
-- Update application status
-- Export CSV reports
-- Download full records
-- Delete test submissions
-
-### AI Chat (Ask AI)
-- Groq LLM (fast, free tier available)
-- Scoped to scholarship/application questions only
-- Daily usage limits (tracked per user)
-- Unlimited for admin email
-
-### Geoblock
-- Pakistan-only access via Cloudflare Pages middleware
-- Browser fallback in `assets/js/geoblock.js`
-- Blocks other countries with `deny.html` message
-- Enabled by default
-
-## Firebase Setup
-
-### Project
-```
-Project ID: successscholarships-2026
+All HTML files reference:
+```javascript
+const firebaseConfig = {
+  apiKey: "AIzaSyAw65XzclDbj2AUyHKlPKP0dufaoqpd8OY",
+  authDomain: "successscholarships-2026.firebaseapp.com",
+  projectId: "successscholarships-2026",
+  storageBucket: "successscholarships-2026.firebasestorage.app",
+  messagingSenderId: "548307406445",
+  appId: "1:548307406445:web:821b1aa139ecdb0ac2f964",
+  measurementId: "G-7X02YSZCZ0"
+};
 ```
 
-### Collections
-- `applications` - Form submissions from students
-- `application_status` - Status records for lookup
-- `application_submissions` - Duplicate check records
-- `ai_usage` - Track daily AI usage per user
+Update if migrating projects.
 
-### Security Rules
-Must allow admin email (sahulatfamilypk@gmail.com) to read/write all collections.
+### Firestore Security Rules
 
-### Authorized Domains
-```
-successscholarships.pages.dev
-<preview-id>.successscholarships.pages.dev
-```
+Admin email: `sahulatfamilypk@gmail.com`
 
-## Cloudflare Pages Setup
-
-### Environment Variables
-```
-GROQ_API_KEY     # Required for Ask AI
-GROQ_MODEL       # Optional (defaults to mixtral-8x7b-32768)
+```javascript
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if request.auth.token.email == 'sahulatfamilypk@gmail.com';
+    }
+    match /applications/{appId} {
+      allow create: if request.auth != null;
+    }
+  }
+}
 ```
 
-### Functions
-- `functions/api/ask-ai.js` - AI responses
-- `functions/api/send-confirmation.js` - Email on submit
+**Authorized domains:**
+- `successscholarships.pages.dev`
+- `*.successscholarships.pages.dev` (previews)
 
-## Local Development
+## Cloudflare Pages Functions
 
-### No build step
-This is a static site. Just open files in a browser or use a local server:
+### POST `/api/ask-ai`
 
+**Headers:**
+```
+Content-Type: application/json
+x-firebase-token: <JWT from Firebase Auth>
+```
+
+**Request:**
+```json
+{
+  "message": "How do I write my need statement?",
+  "history": [
+    { "role": "user", "content": "..." },
+    { "role": "assistant", "content": "..." }
+  ]
+}
+```
+
+**Response (200):**
+```json
+{
+  "ok": true,
+  "answer": "Write about specific financial needs..."
+}
+```
+
+**Errors:**
+- 401: Missing Firebase token
+- 429: Rate limit exceeded (150/day per IP, except admin email)
+- 500: Groq API error
+
+**Rate Limiting:**
+- Per-IP counter stored in `Durable Object` or memory
+- Reset daily at UTC midnight (Asia/Karachi TZ)
+- Admin email (`sahulatfamilypk@gmail.com`) = unlimited
+
+**Groq Configuration:**
+- Model: `env.GROQ_MODEL` (default `llama-3.1-8b-instant`)
+- Temperature: 0.2 (deterministic)
+- Max tokens: 450
+- API key: `env.GROQ_API_KEY`
+
+### POST `/api/send-confirmation`
+
+Internal function (called during form submission).
+
+**Payload:**
+```json
+{
+  "application_id": "SF2026-ABC12",
+  "student_name": "Ali Ahmed",
+  "email": "student@example.com",
+  "...": "..."
+}
+```
+
+**Handler:**
+- Formats confirmation email
+- Sends via configured email service (Apps Script, SendGrid, etc.)
+- Logs errors but doesn't block application submission
+
+## Geoblock
+
+### Cloudflare Middleware
+- Primary geoblock via Cloudflare Security settings
+- Blocks non-Pakistan IPs at edge
+- Serves `deny.html` for blocked requests
+
+### Browser Fallback
+**File:** `assets/js/geoblock.js`
+
+- Runs on page load
+- Fetches user IP from Cloudflare API
+- Validates against Pakistan CIDR ranges
+- Redirects to `/deny.html` if blocked
+- **Note:** Unreliable on VPNs; middleware is authoritative
+
+## Development
+
+### Local Testing
 ```bash
 cd /home/user/SuccessScholarships
 python3 -m http.server 8000
-# Then visit http://localhost:8000
+# http://localhost:8000
 ```
 
-### Firebase Setup
-Update Firebase config in these files if switching projects:
-- `apply.html` - Application form
-- `status.html` - Status lookup
-- `admin.html` - Admin dashboard
-- `auth.html` - Google sign-in
+No build step required.
 
-Look for `firebaseConfig` object in `<script>` tags.
+### Firestore Local Emulator (Optional)
+```bash
+firebase emulators:start --only firestore
+# Update config in HTML:
+# const db = getFirestore(app);
+# connectFirestoreEmulator(db, 'localhost', 8080);
+```
 
-### Git Workflow
-- Branch: `claude/age-guess-github-repo-rf6ww2` (feature branch for language simplification)
-- Main: Production-ready code
-- Commits signed with GPG key `928DF747700C2142`
+### Deploying
+```bash
+git push origin main
+# Cloudflare automatically detects push → builds → deploys
+```
 
-## Important Notes
+Builds are instant (no build step). Deployment ~30 seconds.
 
-### Firebase
-- Do NOT change project ID unless actually migrating
-- Update Firestore rules if admin email changes
-- Add preview domains to authorized domains list
-- Browser favicon caches stubbornly; hard refresh if icon doesn't update
+### Debugging
 
-### Geoblock
-- Currently enabled and working
-- Cloudflare middleware handles primary block
-- Browser fallback shows `deny.html` if blocked
+**Admin Console:**
+- Cloudflare Dashboard → Pages → `sahulatfamily` → Deployments/Functions
+- Check function logs for errors
 
-### Admin Access
-- Admin Gmail: sahulatfamilypk@gmail.com
-- Must be in Firebase authenticated users
-- Must have Firestore read/write permissions
-- Can be changed but requires Firebase config update
+**Firebase Console:**
+- Firestore → Collections (inspect documents)
+- Authentication → Users (verify auth state)
+- Security Rules → Test Rules (validate rule logic)
 
-### AI Usage
-- Free tier: 100+ requests/month on Groq
-- Admin email has unlimited usage
-- Daily limit of 5 uses for other students
-- Limit resets at midnight UTC
+**Browser DevTools:**
+- Console: Firebase SDK errors, JavaScript exceptions
+- Network: Firestore REST API calls (`/v1/projects/.../documents`)
+- Local Storage: Firebase session tokens
 
-## Recent Changes
+## Application ID Generation
 
-### Language Simplification (July 20, 2026)
-Simplified all page text for easier reading:
-- Homepage: "Help for school" instead of technical language
-- Application form: Clearer labels, simpler descriptions
-- Status page: Shorter error messages
-- All other pages: Simplified vocabulary and sentence structure
-- Commit: `6994e98` (GPG signed)
+```javascript
+const makeId = () => `SF2026-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
+```
 
-## Common Tasks
+- Format: `SF2026-` + 5 random base-36 alphanumeric chars
+- Collision probability: ~1 in 1,679,616 per ID
+- **No database uniqueness constraint** (applications collection uses ID as doc ID, so collisions overwrite)
 
-### Add a new page
-1. Create `.html` file
-2. Include header/footer from `index.html` (copy structure)
-3. Use shared styles from `assets/css/styles.css`
-4. Include `assets/js/script.js` for navigation
-5. Add link to `apply.html` navigation
+## Common Modifications
 
-### Change admin email
-1. Update Firebase Authentication
-2. Update Firestore security rules
-3. Update config in `admin.html`, `auth.html`
-4. Update README.md
+### Change Admin Email
 
-### Update eligibility criteria
-Edit the eligibility guide section in `eligibility.html`. No code changes needed.
+1. **Firebase Console:**
+   - Authentication → Users → Add new user (new admin email)
 
-### Add new application status
-Add status to Firestore `application_status` collection. Status lookup will automatically display it.
+2. **Firestore Rules:**
+   ```javascript
+   allow read, write: if request.auth.token.email == 'newemail@example.com';
+   ```
 
-## Support
+3. **HTML Files:**
+   - `admin.html`: Update validation (if present)
+   - `apply.html`: Update confirmation email logic (if present)
+   - `ask-ai.js`: Update unlimited AI email
 
-- Official email: sahulatfamilypk@gmail.com
-- Student support: Contact page or email
-- Admin support: Check Firebase logs and Firestore rules
+4. **CLAUDE.md & README.md:**
+   - Update admin email references
 
-## License
+### Update Eligibility Criteria
 
-Built with care for Pakistani students. All rights reserved.
+Edit `eligibility.html` directly (no code changes needed):
+```html
+<article class="criteria-card">
+  <strong>40%</strong>
+  <h2>Family money</h2>
+  <p>Description...</p>
+</article>
+```
+
+### Add New Application Status
+
+1. **Firestore Console:**
+   - Add document to `application_status` collection with status value
+
+2. **Status lookup** (`status.html`):
+   - Already supports any status string (no hardcoding)
+
+### Migrate Firebase Project
+
+1. Create new Firebase project
+2. Update config in ALL HTML files:
+   - `apply.html`
+   - `status.html`
+   - `admin.html`
+   - `auth.html`
+3. Update Firestore security rules
+4. Add authorized domains
+5. Re-create collections (or export/import data)
+6. Update `CLAUDE.md` & `README.md`
+7. Commit with message: `Migrate Firebase to new project: <project-id>`
+
+## Performance Notes
+
+- No build/bundling → served raw HTML/CSS/JS
+- Firebase SDK loaded from CDN (gstatic.com)
+- Firestore REST API: ~100-200ms latency
+- Groq API: ~1-2s response time (LLM inference)
+- Geoblock: ~50ms (Cloudflare edge, cached)
+
+## Testing Checklist
+
+- [ ] Application form: Create → Verify Firestore document
+- [ ] Duplicate warning: Resubmit → See warning dialog
+- [ ] Status lookup: Query own ID → See "Received" status
+- [ ] Ask AI: Sign in → Ask question → Get response
+- [ ] Admin dashboard: View applications, update status
+- [ ] Geoblock: Test non-Pakistan IP → See deny page
+- [ ] Mobile: Check responsiveness (max-width: 640px)
+- [ ] OAuth flow: Sign in → Redirect to apply → Sign out
+
+## Endpoints Summary
+
+| Endpoint | Method | Auth | Purpose |
+|----------|--------|------|---------|
+| `/api/ask-ai` | POST | Required | Groq LLM chat |
+| `/api/send-confirmation` | POST | Internal | Email confirmation |
