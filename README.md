@@ -1,6 +1,8 @@
-# Sahulat Family Scholarship Portal
+# Success Factor - Sahulat Family Scholarship Portal
 
 A lightweight scholarship portal for Sahulat Family. The site helps students and families learn about the program, apply online, check status updates, read eligibility guidance, and get short AI help while preparing an application.
+
+**Language:** All pages use simplified, easy-to-read text for younger students and non-native English speakers.
 
 ## Live Site
 
