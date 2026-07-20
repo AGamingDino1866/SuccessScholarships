@@ -76,44 +76,28 @@ Cloudflare Pages static site + Firestore + Firebase Auth + Groq LLM.
 | `/admin.html` | `admin.html` | Required | Admin dashboard (Firestore CRUD) |
 | `/deny.html` | `deny.html` | None | Geoblock page (served by CF middleware) |
 
-### Firebase Config (Hardcoded)
+### Firebase Config (Hardcoded - Keep Private)
 
-All HTML files reference:
-```javascript
-const firebaseConfig = {
-  apiKey: "AIzaSyAw65XzclDbj2AUyHKlPKP0dufaoqpd8OY",
-  authDomain: "successscholarships-2026.firebaseapp.com",
-  projectId: "successscholarships-2026",
-  storageBucket: "successscholarships-2026.firebasestorage.app",
-  messagingSenderId: "548307406445",
-  appId: "1:548307406445:web:821b1aa139ecdb0ac2f964",
-  measurementId: "G-7X02YSZCZ0"
-};
-```
+All HTML files have Firebase config hardcoded in `<script>` tags:
+- `apply.html`
+- `status.html`
+- `admin.html`
+- `auth.html`
 
-Update if migrating projects.
+Update if migrating projects (do NOT commit config to git).
 
 ### Firestore Security Rules
 
 Admin email: `sahulatfamilypk@gmail.com`
 
-```javascript
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if request.auth.token.email == 'sahulatfamilypk@gmail.com';
-    }
-    match /applications/{appId} {
-      allow create: if request.auth != null;
-    }
-  }
-}
-```
+Security rules are configured in Firebase Console (not in git). Key restrictions:
+- Admin email has full read/write access
+- Users can only create applications (not read others)
+- Status lookups have appropriate read constraints
 
 **Authorized domains:**
-- `successscholarships.pages.dev`
-- `*.successscholarships.pages.dev` (previews)
+- `sahulatafamilytrust.pages.dev`
+- `*.sahulatafamilytrust.pages.dev` (previews)
 
 ## Cloudflare Pages Functions
 

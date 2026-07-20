@@ -2,7 +2,7 @@
 
 Cloudflare Pages static site for Sahulat Family scholarship applications (Pakistan-focused).
 
-**Live:** https://successscholarships.pages.dev
+**Live:** https://sahulatafamilytrust.pages.dev
 
 ## Architecture
 
@@ -29,18 +29,11 @@ GROQ_API_KEY=<your-groq-api-key>
 GROQ_MODEL=llama-3.1-8b-instant  # optional
 ```
 
-**Firebase Config** (hardcoded in HTML - update if migrating):
-```javascript
-const firebaseConfig = {
-  apiKey: "AIzaSyAw65XzclDbj2AUyHKlPKP0dufaoqpd8OY",
-  authDomain: "successscholarships-2026.firebaseapp.com",
-  projectId: "successscholarships-2026",
-  storageBucket: "successscholarships-2026.firebasestorage.app",
-  messagingSenderId: "548307406445",
-  appId: "1:548307406445:web:821b1aa139ecdb0ac2f964",
-  measurementId: "G-7X02YSZCZ0"
-};
-```
+**Firebase Config** (hardcoded in HTML - keep private, update if migrating):
+- `apply.html`
+- `status.html`
+- `admin.html`
+- `auth.html`
 
 ### Firestore Security Rules
 ```javascript
@@ -61,8 +54,8 @@ service cloud.firestore {
 
 ### Firebase Auth - Authorized Domains
 ```
-successscholarships.pages.dev
-*.successscholarships.pages.dev
+sahulatafamilytrust.pages.dev
+*.sahulatafamilytrust.pages.dev
 ```
 
 ## File Structure
