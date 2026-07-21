@@ -95,6 +95,23 @@ const setupNavigation = () => {
       if (currentPage === href) link.classList.add("active");
       navLinks.appendChild(link);
     });
+
+    // Add sign-out button if user is logged in
+    if (typeof firebase !== 'undefined' && firebase.auth) {
+      firebase.auth().onAuthStateChanged((user) => {
+        const authLink = navLinks.querySelector('a[href="auth.html"]');
+        if (user && authLink) {
+          authLink.textContent = 'Sign Out';
+          authLink.href = '#';
+          authLink.onclick = (e) => {
+            e.preventDefault();
+            firebase.auth().signOut().then(() => {
+              window.location.href = 'index.html';
+            });
+          };
+        }
+      });
+    }
   }
 
   const navToggle = document.querySelector(".nav-toggle");
