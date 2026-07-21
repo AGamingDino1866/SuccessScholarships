@@ -1,0 +1,29 @@
+# Sahulat Family Scholarship Portal - Search Engine Robots Configuration
+
+User-agent: *
+Allow: /
+
+# Disallow private/admin sections
+Disallow: /admin.html
+Disallow: /admin/
+Disallow: /private/
+Disallow: /.git/
+Disallow: /.env
+Disallow: /node_modules/
+Disallow: /functions/
+Disallow: /wrangler.toml
+
+# Disallow form submissions and API endpoints
+Disallow: /api/
+
+# Disallow temporary/cache directories
+Disallow: /tmp/
+Disallow: /.cache/
+Disallow: /build/
+Disallow: /dist/
+
+# Crawl delay (be respectful)
+Crawl-delay: 1
+
+# Sitemap location for search engines
+Sitemap: https://sahulatafamilytrust.pages.dev/sitemap.xml

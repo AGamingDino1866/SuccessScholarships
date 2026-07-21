@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <!-- Homepage - Priority 1.0 -->
+  <url>
+    <loc>https://sahulatafamilytrust.pages.dev/</loc>
+    <lastmod>2026-07-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Application Page -->
+  <url>
+    <loc>https://sahulatafamilytrust.pages.dev/apply.html</loc>
+    <lastmod>2026-07-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.95</priority>
+  </url>
+
+  <!-- Eligibility Page -->
+  <url>
+    <loc>https://sahulatafamilytrust.pages.dev/eligibility.html</loc>
+    <lastmod>2026-07-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.90</priority>
+  </url>
+
+  <!-- AI Assistant Page -->
+  <url>
+    <loc>https://sahulatafamilytrust.pages.dev/ask-ai.html</loc>
+    <lastmod>2026-07-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <!-- Status Lookup Page -->
+  <url>
+    <loc>https://sahulatafamilytrust.pages.dev/status.html</loc>
+    <lastmod>2026-07-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+  </url>
+
+  <!-- Contact Page -->
+  <url>
+    <loc>https://sahulatafamilytrust.pages.dev/contact.html</loc>
+    <lastmod>2026-07-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+
+  <!-- Authentication Page -->
+  <url>
+    <loc>https://sahulatafamilytrust.pages.dev/auth.html</loc>
+    <lastmod>2026-07-21</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.70</priority>
+  </url>
+
+  <!-- Affordable Schools Page -->
+  <url>
+    <loc>https://sahulatafamilytrust.pages.dev/affordable-schools.html</loc>
+    <lastmod>2026-07-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+</urlset>
