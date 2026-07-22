@@ -4,7 +4,13 @@ const speakText = (text) => {
   speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.rate = 0.9;
-  utterance.pitch = 0.8;
+  utterance.pitch = 1.3;
+
+  // Try to select a female voice
+  const voices = speechSynthesis.getVoices();
+  const femaleVoice = voices.find(voice => voice.name.includes('Female') || voice.name.includes('female'));
+  if (femaleVoice) utterance.voice = femaleVoice;
+
   speechSynthesis.speak(utterance);
 };
 
