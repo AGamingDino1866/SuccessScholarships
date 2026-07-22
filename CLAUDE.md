@@ -235,7 +235,7 @@ ipUsage.set(key, current + 1);
 
 ### POST `/api/tts`
 
-**Purpose:** Powers the site-wide read-aloud button (`assets/js/read-aloud.js`) and the apply.html question/answer read-aloud controls. Synthesizes speech via Microsoft Edge's free "Read Aloud" neural voice endpoint (the same voices Edge browser uses) over a WebSocket handshake - no API key, no account, no per-character billing.
+**Purpose:** Powers the site-wide read-aloud button (`assets/js/read-aloud.js`) and the apply.html question/answer read-aloud controls. Synthesizes speech via Cloudflare Workers AI (`@cf/myshell-ai/melotts`) - runs on the same Cloudflare account as the rest of the site, no separate signup, no API key, no credit card, no end-user sign-in.
 
 **Headers:**
 ```
@@ -253,12 +253,14 @@ x-firebase-token: <JWT from Firebase Auth>   (optional - unlocks unlimited daily
 **Errors (JSON body):**
 - `400 Bad Request`: Missing/empty `text`
 - `429 Too Many Requests`: Daily per-IP character budget exceeded (20,000 chars/day, admin email exempt)
-- `502 Bad Gateway`: Edge TTS WebSocket handshake failed, timed out, or returned no audio
+- `500 Internal Server Error`: `AI` binding not configured
+- `502 Bad Gateway`: Workers AI call failed or returned no audio
 
 **Config:**
-- `env.EDGE_TTS_VOICE` (optional, defaults to `en-US-AriaNeural` - a warm, natural feminine Microsoft neural voice). Any Edge/Azure neural voice name works (e.g. `en-US-JennyNeural`, `en-US-SaraNeural`).
+- Requires an **AI binding** named `AI` on the Pages project: Cloudflare dashboard -> Pages project -> Settings -> Functions -> Bindings -> add binding, type "AI", variable name `AI`. Free plan includes a daily Workers AI neuron allowance; no credit card needed to enable it.
+- `env.WORKERS_AI_TTS_LANG` (optional, defaults to `en`)
 - Requests over 4000 characters are truncated to the nearest word boundary before synthesis, to bound response time on long page reads.
-- **Unofficial endpoint** - this reverse-engineers the same speech service the Edge browser's "Read Aloud" feature and extension use. It is not a published/supported Microsoft API, has no SLA, and could change or start rejecting requests without notice. If it breaks, check whether the `TrustedClientToken` constant or WebSocket handshake headers in `functions/api/tts.js` need updating (search "edge-tts" for the current community-maintained protocol reference).
+- Voice quality/customization is more limited than a dedicated TTS provider (MeloTTS is a lighter open-source model) - there's no separate voice-selection parameter beyond `lang`.
 
 ### POST `/api/send-confirmation`
 
@@ -511,7 +513,7 @@ Edit `eligibility.html` directly (static content, no code changes needed):
 | Endpoint | Method | Auth | Rate Limit | Purpose |
 |----------|--------|------|-----------|---------|
 | `/api/ask-ai` | POST | Required (JWT) | 150/day per IP | Groq LLM chat |
-| `/api/tts` | POST | None (JWT unlocks unlimited for admin) | 20,000 chars/day per IP | Edge TTS read-aloud |
+| `/api/tts` | POST | None (JWT unlocks unlimited for admin) | 20,000 chars/day per IP | Workers AI read-aloud |
 | `/api/send-confirmation` | POST | Internal | None | Email handler |
 
 ## Known Limitations
@@ -521,4 +523,4 @@ Edit `eligibility.html` directly (static content, no code changes needed):
 3. **Firebase config in HTML** - API key visible in source (not a secret, scoped to Firestore)
 5. **Eventual consistency** - Status updates may lag behind application writes (~few seconds)
 6. **No offline support** - Requires active internet connection for Firestore operations
-7. **`/api/tts` relies on an unofficial endpoint** - Microsoft's Edge "Read Aloud" speech service is not a published API; it could change its WebSocket handshake or start rejecting non-Edge traffic without notice, which would break read-aloud site-wide until `functions/api/tts.js` is updated to match
+7. **`/api/tts` voice quality is capped by MeloTTS** - Workers AI's `@cf/myshell-ai/melotts` is a lighter open-source model with no per-voice selection beyond `lang`; it won't match a dedicated cloud TTS provider's naturalness

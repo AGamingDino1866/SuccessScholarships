@@ -1,4 +1,4 @@
-// Global read-aloud functionality (text-to-speech) powered by Edge TTS via /api/tts
+// Global read-aloud functionality (text-to-speech) powered by Cloudflare Workers AI via /api/tts
 let currentReadAloudAudio = null;
 
 const stopSpeaking = () => {
@@ -11,7 +11,7 @@ const stopSpeaking = () => {
 
 const isSpeaking = () => !!currentReadAloudAudio && !currentReadAloudAudio.paused;
 
-// Speaks text using the site's Edge TTS-backed /api/tts endpoint.
+// Speaks text using the site's Workers AI-backed /api/tts endpoint.
 // Returns the playing Audio element (or null on failure) so callers can hook 'ended'/'error'.
 const speakText = async (text) => {
   stopSpeaking();
