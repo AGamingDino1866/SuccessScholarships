@@ -3,22 +3,38 @@ class TranslationManager {
   constructor() {
     this.currentLang = localStorage.getItem('preferred-language') || 'en';
     this.isTranslating = false;
+    this.translationCache = new Map();
   }
 
-  async translateText(text) {
-    if (!text || !text.trim()) return text;
+  async translateBatch(texts) {
+    if (!texts || texts.length === 0) return {};
+
+    const batchText = texts.join('\n||||\n');
+    const cacheKey = batchText.substring(0, 100);
+    if (this.translationCache.has(cacheKey)) {
+      return this.translationCache.get(cacheKey);
+    }
 
     try {
-      const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text.trim())}&langpair=en|ur`);
+      const response = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(batchText)}&langpair=en|ur`);
       if (!response.ok) throw new Error('API error');
       const data = await response.json();
       if (data.responseStatus === 200 && data.responseData?.translatedText) {
-        return data.responseData.translatedText;
+        const translated = data.responseData.translatedText.split('\n||||\n');
+        const result = {};
+        texts.forEach((text, i) => {
+          result[text] = translated[i] || text;
+        });
+        this.translationCache.set(cacheKey, result);
+        return result;
       }
     } catch (error) {
-      console.error('Translation error:', error);
+      console.error('Batch translation error:', error);
     }
-    return text;
+
+    const result = {};
+    texts.forEach(text => result[text] = text);
+    return result;
   }
 
   async translatePage(lang) {
@@ -33,40 +49,52 @@ class TranslationManager {
       let node;
       while ((node = walker.nextNode())) {
         const text = node.nodeValue.trim();
-        if (text.length > 0 && text.length < 300 && !node.parentElement?.hasAttribute('data-no-translate')) {
-          textNodes.push(node);
+        if (text.length > 0 && text.length < 200 && !node.parentElement?.hasAttribute('data-no-translate')) {
+          textNodes.push({ node, text });
         }
       }
 
       console.log(`Translating ${textNodes.length} text nodes to Urdu`);
 
-      for (const textNode of textNodes) {
-        try {
-          const original = textNode.nodeValue.trim();
-          const translated = await this.translateText(original);
-          if (translated && translated !== original) {
-            textNode.nodeValue = translated;
+      // Batch translate in groups of 20 for speed
+      const batchSize = 20;
+      for (let i = 0; i < textNodes.length; i += batchSize) {
+        const batch = textNodes.slice(i, i + batchSize);
+        const texts = batch.map(item => item.text);
+        const translations = await this.translateBatch(texts);
+
+        batch.forEach(item => {
+          const translated = translations[item.text];
+          if (translated && translated !== item.text) {
+            item.node.nodeValue = translated;
           }
-        } catch (e) {
-          console.error('Node translation failed:', e);
-        }
+        });
       }
 
-      // Translate labels and titles
-      const elements = document.querySelectorAll('[aria-label], [title]');
-      for (const el of elements) {
-        try {
+      // Translate aria-labels and titles in parallel
+      const elements = Array.from(document.querySelectorAll('[aria-label], [title]'));
+      const labels = elements
+        .map(el => el.getAttribute('aria-label'))
+        .filter(Boolean)
+        .filter((v, i, a) => a.indexOf(v) === i);
+      const titles = elements
+        .map(el => el.getAttribute('title'))
+        .filter(Boolean)
+        .filter((v, i, a) => a.indexOf(v) === i);
+
+      const allAttrs = [...labels, ...titles];
+      if (allAttrs.length > 0) {
+        const translations = await this.translateBatch(allAttrs);
+        elements.forEach(el => {
           if (el.getAttribute('aria-label')) {
-            const translated = await this.translateText(el.getAttribute('aria-label'));
+            const translated = translations[el.getAttribute('aria-label')];
             if (translated) el.setAttribute('aria-label', translated);
           }
           if (el.getAttribute('title')) {
-            const translated = await this.translateText(el.getAttribute('title'));
+            const translated = translations[el.getAttribute('title')];
             if (translated) el.setAttribute('title', translated);
           }
-        } catch (e) {
-          console.error('Attribute translation failed:', e);
-        }
+        });
       }
 
       console.log('Urdu translation complete');
