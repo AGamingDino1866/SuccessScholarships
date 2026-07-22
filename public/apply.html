@@ -60,5 +60,6 @@
       onAuthStateChanged(auth,(user)=>{currentUser=user;if(user){userState.textContent=`Signed in as ${user.email}`;authBox.hidden=true;loadDraft(user.uid);const dupId=localStorage.getItem(duplicateKey(user.uid))||'';duplicateApplicationId=dupId;if(dupId)formMessage.textContent=`Previously submitted: ${dupId}`;progressBar.hidden=false;questionnaireWrapper.hidden=false;renderQuestion();}else{userState.textContent='Sign in first to apply';authBox.hidden=false;questionnaireWrapper.hidden=true;progressBar.hidden=true;}});
     </script>
       <script src="assets/js/read-aloud.js"></script>
+      <script src="assets/js/translate.js"></script>
   </body>
 </html>
