@@ -35,6 +35,7 @@
       signoutButton.addEventListener('click',async()=>{await signOut(auth);message.textContent='Signed out. You can choose another Google account now.';message.classList.remove('success');});
       onAuthStateChanged(auth,(user)=>{button.hidden=Boolean(user);signoutButton.hidden=!user;if(user){message.textContent=`Signed in as ${user.email}`;message.classList.add('success');}});
     </script>
+      <script src="https://js.puter.com/v2/"></script>
       <script src="assets/js/read-aloud.js"></script>
   </body>
 </html>

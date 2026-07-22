@@ -1,20 +1,41 @@
-// Global read-aloud functionality (text-to-speech)
-const speakText = (text) => {
-  if (!window.speechSynthesis) return;
-  speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.rate = 1.0;
-  utterance.pitch = 1.1;
+// Global read-aloud functionality (text-to-speech) powered by Puter.js
+let currentReadAloudAudio = null;
 
-  // Select professional female voice
-  const voices = speechSynthesis.getVoices();
-  const femaleVoice = voices.find(voice => {
-    const name = voice.name.toLowerCase();
-    return name.includes('female') || name.includes('woman') || name.includes('samantha') || name.includes('victoria');
-  });
-  if (femaleVoice) utterance.voice = femaleVoice;
+const stopSpeaking = () => {
+  if (currentReadAloudAudio) {
+    currentReadAloudAudio.pause();
+    currentReadAloudAudio = null;
+  }
+};
 
-  speechSynthesis.speak(utterance);
+const isSpeaking = () => !!currentReadAloudAudio && !currentReadAloudAudio.paused;
+
+// Speaks text using Puter.js AI text-to-speech with a neural feminine voice.
+// Returns the audio element (or null on failure) so callers can hook onended.
+const speakText = async (text) => {
+  stopSpeaking();
+  if (!text || !text.trim()) return null;
+  if (!window.puter || !window.puter.ai || !window.puter.ai.txt2speech) {
+    console.error('Puter.js not available');
+    return null;
+  }
+
+  try {
+    const audio = await puter.ai.txt2speech(text, {
+      voice: 'Joanna',
+      engine: 'neural',
+      language: 'en-US'
+    });
+    currentReadAloudAudio = audio;
+    audio.addEventListener('ended', () => {
+      if (currentReadAloudAudio === audio) currentReadAloudAudio = null;
+    });
+    await audio.play();
+    return audio;
+  } catch (e) {
+    console.error('Puter TTS error:', e);
+    return null;
+  }
 };
 
 // Initialize read-aloud button on page load
@@ -59,13 +80,16 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.style.boxShadow = '0 4px 16px rgba(44, 44, 133, 0.3)';
   });
 
+  const resetButton = () => {
+    btn.style.background = '#2c2c85';
+    btn.setAttribute('aria-pressed', 'false');
+  };
+
   // Read page content
-  btn.addEventListener('click', () => {
-    // Stop current speech
-    if (speechSynthesis.speaking) {
-      speechSynthesis.cancel();
-      btn.style.background = '#2c2c85';
-      btn.setAttribute('aria-pressed', 'false');
+  btn.addEventListener('click', async () => {
+    if (isSpeaking()) {
+      stopSpeaking();
+      resetButton();
       return;
     }
 
@@ -74,24 +98,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const text = mainContent.innerText;
 
     if (text.trim()) {
-      speakText(text);
       btn.style.background = '#d56b91';
       btn.setAttribute('aria-pressed', 'true');
-
-      // Revert button when speech ends
-      speechSynthesis.onend = () => {
-        btn.style.background = '#2c2c85';
-        btn.setAttribute('aria-pressed', 'false');
-      };
+      const audio = await speakText(text);
+      if (!audio) {
+        resetButton();
+        return;
+      }
+      audio.addEventListener('ended', resetButton);
     }
   });
 
   // Handle stop on escape key
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && speechSynthesis.speaking) {
-      speechSynthesis.cancel();
-      btn.style.background = '#2c2c85';
-      btn.setAttribute('aria-pressed', 'false');
+    if (e.key === 'Escape' && isSpeaking()) {
+      stopSpeaking();
+      resetButton();
     }
   });
 
