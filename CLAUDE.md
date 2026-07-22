@@ -235,12 +235,12 @@ ipUsage.set(key, current + 1);
 
 ### POST `/api/tts`
 
-**Purpose:** Powers the site-wide read-aloud button (`assets/js/read-aloud.js`) and the apply.html question/answer read-aloud controls. Proxies text to ElevenLabs so the API key never reaches the browser.
+**Purpose:** Powers the site-wide read-aloud button (`assets/js/read-aloud.js`) and the apply.html question/answer read-aloud controls. Synthesizes speech via Microsoft Edge's free "Read Aloud" neural voice endpoint (the same voices Edge browser uses) over a WebSocket handshake - no API key, no account, no per-character billing.
 
 **Headers:**
 ```
 Content-Type: application/json
-x-firebase-token: <JWT from Firebase Auth>   (optional - unlocks unlimited use for the admin email)
+x-firebase-token: <JWT from Firebase Auth>   (optional - unlocks unlimited daily budget for the admin email)
 ```
 
 **Request:**
@@ -253,14 +253,12 @@ x-firebase-token: <JWT from Firebase Auth>   (optional - unlocks unlimited use f
 **Errors (JSON body):**
 - `400 Bad Request`: Missing/empty `text`
 - `429 Too Many Requests`: Daily per-IP character budget exceeded (20,000 chars/day, admin email exempt)
-- `500 Internal Server Error`: `ELEVENLABS_API_KEY` not configured
-- `502 Bad Gateway`: ElevenLabs API error
+- `502 Bad Gateway`: Edge TTS WebSocket handshake failed, timed out, or returned no audio
 
 **Config:**
-- `env.ELEVENLABS_API_KEY` (Cloudflare Pages environment secret, required)
-- `env.ELEVENLABS_VOICE_ID` (optional, defaults to `EXAVITQu4vr4xnSDxMaL` - "Sarah", a natural feminine voice). Most ElevenLabs premade voices are now "library voices" that free-tier accounts cannot call via the API - add a voice to your account's "My Voices" from the Voice Library first (free), then use its voice ID here.
-- `env.ELEVENLABS_MODEL` (optional, defaults to `eleven_turbo_v2_5`)
-- Requests over 4000 characters are truncated to the nearest word boundary before being sent to ElevenLabs, to bound cost on long page reads.
+- `env.EDGE_TTS_VOICE` (optional, defaults to `en-US-AriaNeural` - a warm, natural feminine Microsoft neural voice). Any Edge/Azure neural voice name works (e.g. `en-US-JennyNeural`, `en-US-SaraNeural`).
+- Requests over 4000 characters are truncated to the nearest word boundary before synthesis, to bound response time on long page reads.
+- **Unofficial endpoint** - this reverse-engineers the same speech service the Edge browser's "Read Aloud" feature and extension use. It is not a published/supported Microsoft API, has no SLA, and could change or start rejecting requests without notice. If it breaks, check whether the `TrustedClientToken` constant or WebSocket handshake headers in `functions/api/tts.js` need updating (search "edge-tts" for the current community-maintained protocol reference).
 
 ### POST `/api/send-confirmation`
 
@@ -513,7 +511,7 @@ Edit `eligibility.html` directly (static content, no code changes needed):
 | Endpoint | Method | Auth | Rate Limit | Purpose |
 |----------|--------|------|-----------|---------|
 | `/api/ask-ai` | POST | Required (JWT) | 150/day per IP | Groq LLM chat |
-| `/api/tts` | POST | None (JWT unlocks unlimited for admin) | 20,000 chars/day per IP | ElevenLabs read-aloud |
+| `/api/tts` | POST | None (JWT unlocks unlimited for admin) | 20,000 chars/day per IP | Edge TTS read-aloud |
 | `/api/send-confirmation` | POST | Internal | None | Email handler |
 
 ## Known Limitations
@@ -523,4 +521,4 @@ Edit `eligibility.html` directly (static content, no code changes needed):
 3. **Firebase config in HTML** - API key visible in source (not a secret, scoped to Firestore)
 5. **Eventual consistency** - Status updates may lag behind application writes (~few seconds)
 6. **No offline support** - Requires active internet connection for Firestore operations
-7. **ElevenLabs quota shared across all visitors** - `/api/tts`'s per-IP daily character budget doesn't cap total site-wide usage against your ElevenLabs plan quota; a free-tier ElevenLabs account (~10k chars/month) can be exhausted quickly under real traffic
+7. **`/api/tts` relies on an unofficial endpoint** - Microsoft's Edge "Read Aloud" speech service is not a published API; it could change its WebSocket handshake or start rejecting non-Edge traffic without notice, which would break read-aloud site-wide until `functions/api/tts.js` is updated to match

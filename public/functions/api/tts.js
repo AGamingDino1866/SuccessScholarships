@@ -7,10 +7,10 @@ const json = (body, status = 200) =>
     }
   });
 
-const DEFAULT_VOICE_ID = "EXAVITQu4vr4xnSDxMaL"; // Sarah - natural feminine voice, usable on free tier without adding to "My Voices"
 const MAX_CHARS = 4000;
 const IP_DAILY_CHAR_LIMIT = 20000;
 const unlimitedAiEmail = "sahulatfamilypk@gmail.com";
+const DEFAULT_VOICE = "en-US-AriaNeural"; // warm, natural Microsoft neural feminine voice
 
 const ipUsage = new Map();
 
@@ -45,12 +45,105 @@ const reserveChars = (request, chars) => {
   return true;
 };
 
+// Microsoft Edge's "Read Aloud" speech endpoint - the same free neural voices Edge browser
+// uses, reachable over a WebSocket handshake. Unofficial (not a published API), but widely
+// relied upon and has no usage cost or account requirement.
+const TRUSTED_CLIENT_TOKEN = "6A5AA1D4EAFF4E9FB37E23D68491D6F4";
+const EDGE_TTS_URL = `https://speech.platform.bing.com/consumer/speech/synthesize/readaloud/edge/v1?TrustedClientToken=${TRUSTED_CLIENT_TOKEN}`;
+
+const uuidNoDashes = () => crypto.randomUUID().replace(/-/g, "");
+
+const edgeTimestamp = () => {
+  const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const d = new Date();
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${days[d.getUTCDay()]} ${months[d.getUTCMonth()]} ${pad(d.getUTCDate())} ${d.getUTCFullYear()} ${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())} GMT+0000 (Coordinated Universal Time)`;
+};
+
+const escapeSsml = (text) => text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+const synthesizeWithEdgeTts = (text, voice) => new Promise((resolve, reject) => {
+  const connectionId = uuidNoDashes();
+  const wsUrl = `${EDGE_TTS_URL}&ConnectionId=${connectionId}`;
+
+  const timeoutId = setTimeout(() => {
+    reject(new Error("Edge TTS timed out"));
+  }, 15000);
+
+  fetch(wsUrl, {
+    headers: {
+      "Upgrade": "websocket",
+      "Pragma": "no-cache",
+      "Cache-Control": "no-cache",
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0",
+      "Origin": "chrome-extension://jdiccldimpdaibmpdkjnbmckianbfold"
+    }
+  }).then((resp) => {
+    const ws = resp.webSocket;
+    if (!ws) {
+      clearTimeout(timeoutId);
+      reject(new Error("Edge TTS did not accept the WebSocket upgrade"));
+      return;
+    }
+
+    ws.accept();
+    const audioChunks = [];
+
+    ws.addEventListener("message", (event) => {
+      const data = event.data;
+      if (typeof data === "string") {
+        if (data.includes("Path:turn.end")) {
+          clearTimeout(timeoutId);
+          ws.close();
+          resolve(audioChunks);
+        }
+        return;
+      }
+      // Binary frame: first 2 bytes (big-endian) give the header text's length;
+      // everything after that header is raw audio for this chunk.
+      const buffer = new Uint8Array(data);
+      const headerLength = (buffer[0] << 8) | buffer[1];
+      audioChunks.push(buffer.slice(2 + headerLength));
+    });
+
+    ws.addEventListener("close", () => {
+      clearTimeout(timeoutId);
+      resolve(audioChunks);
+    });
+
+    ws.addEventListener("error", () => {
+      clearTimeout(timeoutId);
+      reject(new Error("Edge TTS WebSocket error"));
+    });
+
+    const requestId = uuidNoDashes();
+    const timestamp = edgeTimestamp();
+
+    const configMessage = `X-Timestamp:${timestamp}\r\nContent-Type:application/json; charset=utf-8\r\nPath:speech.config\r\n\r\n${JSON.stringify({
+      context: {
+        synthesis: {
+          audio: {
+            metadataoptions: { sentenceBoundaryEnabled: false, wordBoundaryEnabled: false },
+            outputFormat: "audio-24khz-48kbitrate-mono-mp3"
+          }
+        }
+      }
+    })}`;
+
+    const ssml = `<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='en-US'><voice name='${voice}'><prosody pitch='+0Hz' rate='+0%' volume='+0%'>${escapeSsml(text)}</prosody></voice></speak>`;
+    const ssmlMessage = `X-RequestId:${requestId}\r\nContent-Type:application/ssml+xml\r\nX-Timestamp:${timestamp}Z\r\nPath:ssml\r\n\r\n${ssml}`;
+
+    ws.send(configMessage);
+    ws.send(ssmlMessage);
+  }).catch((err) => {
+    clearTimeout(timeoutId);
+    reject(err);
+  });
+});
+
 export async function onRequestPost(context) {
   const { request, env } = context;
-
-  if (!env.ELEVENLABS_API_KEY) {
-    return json({ ok: false, error: "Read-aloud is not configured yet. Add ELEVENLABS_API_KEY in Cloudflare Pages environment variables." }, 500);
-  }
 
   let body;
   try {
@@ -68,36 +161,29 @@ export async function onRequestPost(context) {
     return json({ ok: false, error: "Read-aloud limit reached for today. Please try again tomorrow." }, 429);
   }
 
-  const voiceId = env.ELEVENLABS_VOICE_ID || DEFAULT_VOICE_ID;
+  const voice = env.EDGE_TTS_VOICE || DEFAULT_VOICE;
 
-  const elevenResponse = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
-    method: "POST",
-    headers: {
-      "content-type": "application/json",
-      "accept": "audio/mpeg",
-      "xi-api-key": env.ELEVENLABS_API_KEY
-    },
-    body: JSON.stringify({
-      text,
-      model_id: env.ELEVENLABS_MODEL || "eleven_turbo_v2_5",
-      voice_settings: { stability: 0.5, similarity_boost: 0.75 }
-    })
-  });
-
-  if (!elevenResponse.ok) {
-    const errText = await elevenResponse.text().catch(() => "");
-    console.error("ElevenLabs error:", elevenResponse.status, errText);
-    let detail = errText;
-    try {
-      const parsed = JSON.parse(errText);
-      detail = parsed.detail?.message || parsed.detail?.status || parsed.detail || errText;
-    } catch {
-      // errText wasn't JSON, use as-is
-    }
-    return json({ ok: false, error: `ElevenLabs ${elevenResponse.status}: ${String(detail).slice(0, 300)}` }, 502);
+  let audioChunks;
+  try {
+    audioChunks = await synthesizeWithEdgeTts(text, voice);
+  } catch (e) {
+    console.error("Edge TTS error:", e.message);
+    return json({ ok: false, error: `Edge TTS error: ${e.message}` }, 502);
   }
 
-  return new Response(elevenResponse.body, {
+  const totalLength = audioChunks.reduce((sum, chunk) => sum + chunk.length, 0);
+  if (totalLength === 0) {
+    return json({ ok: false, error: "Edge TTS returned no audio." }, 502);
+  }
+
+  const merged = new Uint8Array(totalLength);
+  let offset = 0;
+  for (const chunk of audioChunks) {
+    merged.set(chunk, offset);
+    offset += chunk.length;
+  }
+
+  return new Response(merged, {
     status: 200,
     headers: {
       "content-type": "audio/mpeg",
