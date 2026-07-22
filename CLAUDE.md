@@ -20,7 +20,6 @@ Violating this breaks the deployment CI/CD pipeline.
 - **Database:** Firestore (Realtime + REST APIs, `successscholarships-2026` project)
 - **Serverless:** Cloudflare Pages Functions (Node.js runtime, `functions/api/*.js`)
 - **LLM:** Groq API (LLama 3.1 8B Instant, T=0.2, max_tokens=450)
-- **Geoblock:** Cloudflare middleware (IP geolocation) + browser fallback (CIDR validation)
 - **Build:** None (vanilla static site, instant deployment)
 
 ### Database Schema
@@ -82,7 +81,6 @@ Violating this breaks the deployment CI/CD pipeline.
 | `/auth.html` | `auth.html` | None | OAuth sign-in popup (redirects to apply.html) |
 | `/contact.html` | `contact.html` | None | Support info, email links |
 | `/admin.html` | `admin.html` | Firebase Auth (admin email) | Admin dashboard (full Firestore CRUD) |
-| `/deny.html` | `deny.html` | None | Geoblock page (served by CF middleware) |
 
 **Firebase Config** (hardcoded in HTML - keep private):
 - Located in `<script type="module">` tags
@@ -276,35 +274,6 @@ ipUsage.set(key, current + 1);
 - Create Gmail trigger manually: Function: `handleIncomingEmail`, Event: "On receive"
 - Both functions handle errors gracefully (don't crash)
 
-## Geoblock Implementation
-
-### Cloudflare Middleware
-- Primary geoblock via Cloudflare Security → Settings
-- Blocks non-Pakistan IPs at edge (fast, reliable)
-- Serves `deny.html` for blocked requests
-- Configurable via Cloudflare Dashboard
-
-### Browser Fallback
-**File:** `assets/js/geoblock.js`
-
-```javascript
-// Runs on page load
-fetch('https://cloudflare.com/cdn-cgi/trace')
-  .then(r => r.text())
-  .then(text => {
-    const ip = text.match(/ip=([^\n]+)/)?.[1];
-    // Validate against Pakistan CIDR ranges
-    if (!isPakistan(ip)) {
-      window.location.href = '/deny.html';
-    }
-  });
-```
-
-**Characteristics:**
-- Unreliable on VPNs (no way to detect from client-side IP)
-- Fallback only; middleware is authoritative
-- ~200-500ms latency (network + geolocation lookup)
-
 ## Admin Dashboard
 
 **Overview:**
@@ -495,7 +464,6 @@ Edit `eligibility.html` directly (static content, no code changes needed):
 - **Firebase SDK from CDN** → gstatic.com (slow first load, cached thereafter)
 - **Firestore REST API** → ~100-200ms latency (regional replication)
 - **Groq API** → ~1-2s response time (LLM inference)
-- **Geoblock (middleware)** → ~50ms (Cloudflare edge, cached)
 - **Function cold starts** → ~5-10s first request, then instant (warm)
 - **Rate limiting** → in-memory Map, resets on cold start (~hourly)
 
@@ -506,7 +474,6 @@ Edit `eligibility.html` directly (static content, no code changes needed):
 - [ ] Status lookup: Query own ID → See "Received" status card
 - [ ] Ask AI: Sign in → Ask question → Get response within 2-3s
 - [ ] Admin dashboard: Load `/admin.html` → Verify auth redirect if not admin
-- [ ] Geoblock: Test non-Pakistan IP → See deny page (or browser fallback)
 - [ ] Mobile: Check responsiveness (max-width: 640px breakpoint)
 - [ ] OAuth flow: Sign in → Redirect to apply → Sign out (token refresh)
 - [ ] Rate limit: Submit 150+ requests from single IP → See 429 response
@@ -523,7 +490,6 @@ Edit `eligibility.html` directly (static content, no code changes needed):
 
 1. **In-memory rate limiting** - Resets on function cold start (~hourly), users can exceed 150/day
 2. **No uniqueness constraint on application IDs** - Collisions (~1/1.6M) overwrite previous submission
-3. **Geoblock bypass via VPN** - Cannot detect VPN from client-side IP alone
-4. **Firebase config in HTML** - API key visible in source (not a secret, scoped to Firestore)
+3. **Firebase config in HTML** - API key visible in source (not a secret, scoped to Firestore)
 5. **Eventual consistency** - Status updates may lag behind application writes (~few seconds)
 6. **No offline support** - Requires active internet connection for Firestore operations

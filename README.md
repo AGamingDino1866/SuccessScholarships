@@ -14,7 +14,6 @@ JAMstack scholarship portal: Vanilla HTML/CSS/JS frontend, Firestore backend, Gr
 | **Database** | Firestore (Realtime + REST) | `successscholarships-2026` project, multi-region replication |
 | **Serverless** | Cloudflare Pages Functions | Node.js runtime, `functions/api/*.js` entry points |
 | **LLM** | Groq API | `llama-3.1-8b-instant` (default), 450 max_tokens, T=0.2 |
-| **Geoblock** | CF middleware + browser fallback | IP geolocation, Pakistan CIDR validation |
 
 ## Performance Characteristics
 
@@ -23,9 +22,7 @@ JAMstack scholarship portal: Vanilla HTML/CSS/JS frontend, Firestore backend, Gr
 | Firestore read (single doc) | 100-200ms | Regional replication, cached |
 | Firestore write (batch) | 50-150ms | Includes index updates |
 | Groq API (LLM inference) | 1-2s | Token generation, context-dependent |
-| Cloudflare geoblock (middleware) | ~50ms | Cached, edge-computed |
 | Firebase Auth (token validation) | 10-50ms | Local JWT decode, minimal network |
-| Browser geoblock fallback | 200-500ms | External IP lookup, CIDR validation |
 
 **Cold starts:** Functions restart ~hourly (serverless), in-memory rate limit counters reset.
 
@@ -45,7 +42,6 @@ JAMstack scholarship portal: Vanilla HTML/CSS/JS frontend, Firestore backend, Gr
 ├── auth.html               # Google OAuth popup, redirect to /apply.html
 ├── contact.html            # Support info, email link, read-aloud button
 ├── admin.html              # Compact application dashboard with expandable cards, status editor, read-aloud button
-├── deny.html               # Geoblock page (served by CF middleware)
 ├── faq.html                # Frequently asked questions, read-aloud button
 ├── affordable-schools.html # Low-cost school and university options, read-aloud button
 ├── test.html               # Testing page
@@ -53,10 +49,9 @@ JAMstack scholarship portal: Vanilla HTML/CSS/JS frontend, Firestore backend, Gr
 ├── assets/
 │   ├── css/styles.css      # Global styles, CSS custom properties
 │   ├── js/
-│   │   ├── script.js       # Nav toggle, geoblock fallback
+│   │   ├── script.js       # Nav toggle
 │   │   ├── admin.js        # Firestore CRUD for applications, status updates, message customization
-│   │   ├── read-aloud.js   # Global text-to-speech button on all pages using Web Speech API
-│   │   └── geoblock.js     # Browser-side Pakistan CIDR validation
+│   │   └── read-aloud.js   # Global text-to-speech button on all pages using Web Speech API
 │   └── *.{png,jpg}         # Hero images
 ├── functions/api/
 │   ├── ask-ai.js           # Groq API wrapper, rate limiting (150/day per IP)
