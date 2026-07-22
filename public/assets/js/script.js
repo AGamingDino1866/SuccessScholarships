@@ -76,6 +76,8 @@ const setupNavigation = () => {
   injectMobileNavFix();
 
   const navLinks = document.querySelector(".nav-links");
+  let navArray = [];
+
   if (navLinks && !navLinks.classList.contains("admin-nav")) {
     const currentPage = window.location.pathname.split("/").pop() || "index.html";
     const links = [
@@ -90,7 +92,7 @@ const setupNavigation = () => {
     ];
 
     navLinks.innerHTML = "";
-    const navArray = [];
+    navArray = [];
     links.forEach(([href, label]) => {
       const link = document.createElement("a");
       link.href = href;
