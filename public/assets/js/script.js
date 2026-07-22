@@ -158,16 +158,27 @@ const setupNavigation = () => {
     }
   }
 
+  // Setup hamburger menu toggle
   const navToggle = document.querySelector(".nav-toggle");
-  if (!navToggle || !navLinks) return;
+  if (!navToggle) {
+    console.warn("Nav toggle not found");
+    return;
+  }
 
-  navToggle.addEventListener("click", () => {
-    document.body.classList.toggle("nav-open");
-    navToggle.setAttribute("aria-expanded", document.body.classList.contains("nav-open"));
+  const toggleMenu = () => {
+    const isOpen = document.body.classList.toggle("nav-open");
+    navToggle.setAttribute("aria-expanded", String(isOpen));
+    console.log("Menu toggled:", isOpen);
+  };
+
+  navToggle.addEventListener("click", (e) => {
+    e.preventDefault();
+    toggleMenu();
   });
 
-  // Close menu when clicking a link
-  navArray.forEach(link => {
+  // Close menu when clicking any nav link
+  const allLinks = document.querySelectorAll(".nav-links a");
+  allLinks.forEach(link => {
     link.addEventListener("click", () => {
       document.body.classList.remove("nav-open");
       navToggle.setAttribute("aria-expanded", "false");
