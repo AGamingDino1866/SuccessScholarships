@@ -95,6 +95,65 @@ sahulatafamilytrust.pages.dev
 *.sahulatafamilytrust.pages.dev
 ```
 
+### Application Form (14-Question Questionnaire)
+
+**Structure:**
+- One question per screen for progressive disclosure
+- Progress bar shows "Question X of 14"
+- Back/Next buttons for navigation
+- Auto-save to localStorage with draft recovery
+- Duplicate detection via `sahulat-submitted:{uid}` marker
+
+**Questions (in order):**
+1. Full name (text)
+2. City (select: Karachi, Lahore, Islamabad, Rawalpindi, Other)
+3. Grade/Year (text: e.g., "Class 10", "BA Year 2")
+4. School/College name (text)
+5. Mother's name (optional text)
+6. Father's employment status (select)
+7. Number of siblings (number)
+8. Family has university degree? (radio: Yes/No)
+9. Has disability or chronic health? (radio: Yes/No)
+10. Reliable internet access? (select: Yes, Sometimes, No)
+11. Financial need (textarea, 0-1000 chars)
+12. Career goals (textarea, 0-1000 chars)
+13. Why deserve scholarship? (textarea, 0-800 chars)
+14. Preferred contact method (select: WhatsApp, Email, Phone, SMS)
+
+**Accessibility Features:**
+- Proper semantic HTML with `<fieldset>`, `<legend>`, `<label for="id">`
+- All inputs have `aria-label` and `aria-required` attributes
+- Hints connected via `aria-describedby`
+- Character counters announce changes with `aria-live="polite"`
+- Radio groups structured with `role="group"` + `aria-label`
+- Progress bar has `role="progressbar"` with `aria-valuenow/valuemax/valuemin`
+- Form messages in `aria-live` regions for status announcements
+- Success page with `aria-live="assertive"` for completion announcement
+
+**Read-Aloud Features:**
+- 🔊 button reads current question (with question number and hints)
+- 🔊 "Read my answer" button for textarea fields (review before next)
+- Uses Web Speech API (SpeechSynthesis) for instant audio
+- Works in Chrome, Safari, Edge, Firefox
+- Click to start/stop, Escape to cancel
+
+### Accessibility on All Pages
+
+**Global Read-Aloud Button:**
+- Floating 🔊 button on all pages (bottom-right, fixed position)
+- Click reads main page content aloud
+- Turns pink while speaking, blue when idle
+- Accessible via keyboard and screen readers
+- Escape key cancels active speech
+
+**Screen Reader Support:**
+- Semantic HTML structure throughout
+- Proper heading hierarchy and landmarks
+- Form fields properly labeled and associated
+- Dynamic content announced via `aria-live` regions
+- Status messages and errors announced
+- Links have descriptive text (no "click here")
+
 ### Security Rules
 
 Admin email: `sahulatfamilypk@gmail.com`
@@ -180,7 +239,7 @@ ipUsage.set(key, current + 1);
 
 **Internal function** (called during form submission, non-blocking).
 
-**Payload:**
+**Payload (all application fields plus metadata):**
 ```json
 {
   "application_id": "SF2026-ABC12",
@@ -190,16 +249,32 @@ ipUsage.set(key, current + 1);
   "grade": "Class 10",
   "school": "Lahore Grammar School",
   "city": "Lahore",
+  "financial_need": "Our family...",
+  "career_aspirations": "I want to become...",
+  "character_contribution": "I work hard and...",
   "created_at": "2026-07-20T15:30:00Z"
 }
 ```
 
-**Handler:**
-- Formats confirmation email (HTML template)
-- Sends via configured email service (Apps Script, SendGrid, etc.)
-- Logs errors to Cloudflare function logs (non-blocking)
-- Does NOT block application submission if email fails
-- Return code: always 200 (fire-and-forget)
+**Flow:**
+1. Client calls `/api/send-confirmation` after successful Firestore write (fire-and-forget)
+2. Cloudflare function forwards to Google Apps Script deployment URL
+3. Apps Script sends **two emails**:
+   - **Student Confirmation:** Welcome email with Application ID and next steps
+   - **Admin Notification:** Full application details for review
+4. Errors logged to console but don't block form submission
+5. Return code: always 200 (async, non-blocking)
+
+**Email Templates:**
+- **Student Confirmation:** Welcome, Application ID in monospace, timeline, status check link
+- **Admin Notification:** Formatted table of student info + essay sections + next steps link
+- **Autoreply:** Sent when student emails, provides application/status/AI help links
+
+**Setup:**
+- Deploy Google Apps Script at https://script.google.com
+- Copy deployment URL to `functions/api/send-confirmation.js` line 1
+- Create Gmail trigger manually: Function: `handleIncomingEmail`, Event: "On receive"
+- Both functions handle errors gracefully (don't crash)
 
 ## Geoblock Implementation
 
@@ -229,6 +304,52 @@ fetch('https://cloudflare.com/cdn-cgi/trace')
 - Unreliable on VPNs (no way to detect from client-side IP)
 - Fallback only; middleware is authoritative
 - ~200-500ms latency (network + geolocation lookup)
+
+## Admin Dashboard
+
+**Overview:**
+- Compact application list with expandable cards
+- Click header to expand/collapse full details
+- Search by student name or application ID
+- Filter by status (Received, Under Review, Needs Info, Approved, Rejected)
+
+**Expandable Card Layout:**
+```
+┌─ Student Name [Status Badge] ▼ ─┐
+│                                   │ ← Click to expand
+├─────────────────────────────────┤
+│ Application Info                │
+│ - ID, Email, City, Grade,       │
+│   School, Submitted Date        │
+│                                   │
+│ Financial Need                  │
+│ [scrollable text box]           │
+│                                   │
+│ Career Goals                    │
+│ [scrollable text box]           │
+│                                   │
+│ Character & Contribution        │
+│ [scrollable text box]           │
+│                                   │
+│ Message for Student (editable)  │
+│ [textarea]                      │
+│                                   │
+│ Internal Admin Notes (editable) │
+│ [textarea]                      │
+│                                   │
+│ Status: [Dropdown] [Save]       │
+│ [Download] [Delete]             │
+└─────────────────────────────────┘
+```
+
+**Features:**
+- **Message Customization:** Edit what student sees in status lookup
+- **Admin Notes:** Internal comments (not visible to student)
+- **Status Updates:** Change status with immediate Firestore sync
+- **Download:** Export application as .txt file
+- **Delete:** Remove application (with confirmation)
+- **Bulk Export:** CSV export of visible applications
+- **Refresh:** Reload from Firestore
 
 ## Local Development
 
