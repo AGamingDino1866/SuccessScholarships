@@ -59,7 +59,7 @@ const injectMobileNavFix = () => {
   const style = document.createElement("style");
   style.dataset.mobileNavFix = "true";
   style.textContent = `
-    .nav-links{position:relative!important}.nav-slider{position:absolute!important;bottom:0!important;height:3px!important;background:#2c2c85!important;border-radius:2px!important;transition:left 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),width 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)!important}.nav-links a{position:relative!important;color:#2c2c85!important;text-decoration:none!important}.nav-links a.active{color:#2c2c85!important;font-weight:600!important}
+    .nav-links{position:relative!important}.nav-slider{position:absolute!important;bottom:-8px!important;height:32px!important;background:#2c2c85!important;border-radius:8px!important;transition:left 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)!important;z-index:-1!important}.nav-links a{position:relative!important;color:#2c2c85!important;text-decoration:none!important;padding:8px 16px!important;display:inline-block!important;border-radius:8px!important;transition:color 0.4s ease!important}.nav-links a.active{color:white!important;font-weight:600!important}
     .hero-wrap > .hero-card h1{font-size:clamp(2rem,4.7vw,4.7rem)!important;line-height:1!important}
     .centered-nav{position:relative!important;justify-content:center!important}.centered-nav .logo-only{position:absolute!important;left:50px!important;top:50%!important;transform:translateY(-50%)!important}.centered-nav .nav-links{display:flex!important;align-items:center!important;justify-content:center!important;gap:4px!important;white-space:nowrap!important}
     @media (max-width: 920px) {
@@ -90,12 +90,17 @@ const setupNavigation = () => {
     ];
 
     navLinks.innerHTML = "";
+    const navArray = [];
     links.forEach(([href, label]) => {
       const link = document.createElement("a");
       link.href = href;
       link.textContent = label;
-      if (currentPage === href) link.classList.add("active");
+      if (currentPage === href) {
+        link.classList.add("active");
+        link.style.color = "white";
+      }
       navLinks.appendChild(link);
+      navArray.push(link);
     });
 
     // Add slider element for animation
@@ -103,11 +108,35 @@ const setupNavigation = () => {
       const slider = document.createElement("div");
       slider.className = "nav-slider";
       navLinks.appendChild(slider);
-      updateSlider();
     }
 
-    // Update slider on resize
-    window.addEventListener("resize", () => updateSlider());
+    // Setup slider and link interactions
+    const slider = navLinks.querySelector(".nav-slider");
+    const updateSliderPosition = (link = null) => {
+      const activeLink = link || navLinks.querySelector("a.active");
+      if (activeLink && slider) {
+        slider.style.left = activeLink.offsetLeft + "px";
+        slider.style.width = activeLink.offsetWidth + "px";
+      }
+    };
+
+    // Add click handlers to nav links
+    navArray.forEach((link) => {
+      link.addEventListener("click", (e) => {
+        const oldActive = navLinks.querySelector("a.active");
+        if (oldActive) {
+          oldActive.classList.remove("active");
+          oldActive.style.color = "#2c2c85";
+        }
+        link.classList.add("active");
+        link.style.color = "white";
+        updateSliderPosition(link);
+      });
+    });
+
+    // Initial slider position
+    updateSliderPosition();
+    window.addEventListener("resize", () => updateSliderPosition());
 
     // Add sign-out button if user is logged in
     if (typeof firebase !== 'undefined' && firebase.auth) {
@@ -134,17 +163,6 @@ const setupNavigation = () => {
     const isOpen = document.body.classList.toggle("nav-open");
     navToggle.setAttribute("aria-expanded", String(isOpen));
   });
-};
-
-const updateSlider = () => {
-  const navLinks = document.querySelector(".nav-links");
-  if (!navLinks) return;
-  const activeLink = navLinks.querySelector("a.active");
-  const slider = navLinks.querySelector(".nav-slider");
-  if (activeLink && slider) {
-    slider.style.left = activeLink.offsetLeft + "px";
-    slider.style.width = activeLink.offsetWidth + "px";
-  }
 };
 
 setupNavigation();
