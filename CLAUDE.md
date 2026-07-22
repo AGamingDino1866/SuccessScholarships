@@ -258,7 +258,7 @@ x-firebase-token: <JWT from Firebase Auth>   (optional - unlocks unlimited use f
 
 **Config:**
 - `env.ELEVENLABS_API_KEY` (Cloudflare Pages environment secret, required)
-- `env.ELEVENLABS_VOICE_ID` (optional, defaults to `21m00Tcm4TlvDq8ikWAM` - "Rachel", a natural feminine voice)
+- `env.ELEVENLABS_VOICE_ID` (optional, defaults to `EXAVITQu4vr4xnSDxMaL` - "Sarah", a natural feminine voice). Most ElevenLabs premade voices are now "library voices" that free-tier accounts cannot call via the API - add a voice to your account's "My Voices" from the Voice Library first (free), then use its voice ID here.
 - `env.ELEVENLABS_MODEL` (optional, defaults to `eleven_turbo_v2_5`)
 - Requests over 4000 characters are truncated to the nearest word boundary before being sent to ElevenLabs, to bound cost on long page reads.
 

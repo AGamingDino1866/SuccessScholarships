@@ -7,7 +7,7 @@ const json = (body, status = 200) =>
     }
   });
 
-const DEFAULT_VOICE_ID = "21m00Tcm4TlvDq8ikWAM"; // Rachel - clear, natural feminine voice
+const DEFAULT_VOICE_ID = "EXAVITQu4vr4xnSDxMaL"; // Sarah - natural feminine voice, usable on free tier without adding to "My Voices"
 const MAX_CHARS = 4000;
 const IP_DAILY_CHAR_LIMIT = 20000;
 const unlimitedAiEmail = "sahulatfamilypk@gmail.com";
