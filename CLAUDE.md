@@ -107,7 +107,7 @@ sahulatafamilytrust.pages.dev
 **Questions (in order):**
 1. Full name (text)
 2. City (select: Karachi, Lahore, Islamabad, Rawalpindi, Other)
-3. Grade/Year (select: Nursery/KG through Class 10, Matric, O/A Level, Intermediate/FSc Part 1-2, BA/BSc Year 1-4, MA/MSc Year 1-2, Other) - a fixed dropdown rather than free text, so it can't be filled with nonsensical values
+3. Grade/Year (select: Class 9-10, Matric, O/A Level, Intermediate/FSc Part 1-2, BA/BSc Year 1-4, MA/MSc Year 1-2, Other) - a fixed dropdown rather than free text, so it can't be filled with nonsensical values; starts at Class 9 since younger students aren't the target for this need-based, career-oriented scholarship
 4. School/College name (text, 3-100 chars, must contain a letter)
 5. Mother's name (optional text)
 6. Father's employment status (select)
