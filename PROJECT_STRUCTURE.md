@@ -20,7 +20,6 @@ SuccessScholarships/
 │   ├── contact.html            # Support & contact information
 │   ├── eligibility.html        # Scholarship criteria breakdown
 │   ├── faq.html                # Frequently asked questions
-│   ├── affordable-schools.html # List of low-cost educational institutions
 │   └── test.html               # System diagnostics & testing console
 │
 ├── 📁 assets/                  # Static assets (served from CDN)
@@ -86,7 +85,6 @@ SuccessScholarships/
 | `contact.html` | Support | None | Contact info, email form, FAQ links |
 | `eligibility.html` | Criteria | None | Weighted scoring breakdown (40% income, etc) |
 | `faq.html` | Q&A | None | Common questions, expandable answers |
-| `affordable-schools.html` | Resources | None | Low-cost institution directory |
 | `test.html` | Diagnostics | None | System health checks, API validation |
 
 ### Asset Organization

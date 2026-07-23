@@ -43,7 +43,6 @@ JAMstack scholarship portal: Vanilla HTML/CSS/JS frontend, Firestore backend, Gr
 ├── contact.html            # Support info, email link, read-aloud button
 ├── admin.html              # Compact application dashboard with expandable cards, status editor, read-aloud button
 ├── faq.html                # Frequently asked questions, read-aloud button
-├── affordable-schools.html # Low-cost school and university options, read-aloud button
 ├── test.html               # Testing page
 ├── _routes.json            # CF Pages routing config
 ├── assets/
